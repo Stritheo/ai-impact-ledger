@@ -1,0 +1,45 @@
+{
+  "capturedAt": "2026-09-18T07:49:44.204Z",
+  "sources": {
+    "mlenergy-benchmark-paper-2026-09-18": {
+      "url": "https://arxiv.org/abs/2505.06371",
+      "sha256": "c0c0f835f71bec264c2cd901c3b04cd4a0bfbd254438fa5479ba0a765b083904",
+      "capturedAt": "2026-09-18T07:49:44.204Z"
+    },
+    "mlenergy-token-classes-2026-09-17": {
+      "url": "https://ml.energy/leaderboard/",
+      "sha256": "b638d291fc6a0588afeb0deccbcf8fa94e197fadf557614e8b978932d5e1ac65",
+      "capturedAt": "2026-09-18T07:49:44.204Z"
+    },
+    "google-full-system-2026-09-17": {
+      "url": "https://arxiv.org/abs/2508.15734",
+      "sha256": "fb41bd26fdb2ea1e7189286c7cc675118a034142d442ff02306f00faeb0f0c34",
+      "capturedAt": "2026-09-18T07:49:44.204Z"
+    },
+    "lbnl-water-2024": {
+      "url": "https://eta-publications.lbl.gov/sites/default/files/2024-12/us_data_center_energy_usage_report_lbnl-2001637_0.pdf",
+      "sha256": "791f95feb348b406f0817bca11a65a9147883ade988c7426ebc4e28bfe35a3c5",
+      "capturedAt": "2026-09-18T07:49:44.204Z"
+    },
+    "anthropic-pricing-2026-09-15": {
+      "url": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "sha256": "db549e61fcaf2f8c7629417f74a54766a23579b3d648c779f4bb30d03c51e56d",
+      "capturedAt": "2026-09-18T07:49:44.204Z"
+    },
+    "openai-astra-pricing-2026-09-15": {
+      "url": "https://developers.openai.com/api/docs/models/gpt-6-astra",
+      "sha256": "faec0ec8510aa5bbdb8c1846e976dc2cbb7dedeed73e29ab6344df3761715197",
+      "capturedAt": "2026-09-18T07:49:44.204Z"
+    },
+    "openai-sol-pricing-2026-09-15": {
+      "url": "https://developers.openai.com/api/docs/models/gpt-5.6-sol",
+      "sha256": "65b7075425424745433af54929b5f4d3a042540979825063494cad3e3d78c039",
+      "capturedAt": "2026-09-18T07:49:44.204Z"
+    },
+    "openai-terra-pricing-2026-09-15": {
+      "url": "https://developers.openai.com/api/docs/models/gpt-5.6-terra",
+      "sha256": "d045dc335ebc56c3017882374d8bc0cb4016aa6a5bcaaa213c429f2ec85d45c6",
+      "capturedAt": "2026-09-18T07:49:44.204Z"
+    }
+  }
+}

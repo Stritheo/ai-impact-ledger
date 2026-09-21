@@ -1,0 +1,19 @@
+AI Impact Ledger is an independent implementation by Miles Sowden.
+
+Design inspiration and research inputs:
+
+- ClaudeCodeUsage, github.com/ryoppippi/ClaudeCodeUsage, reviewed at commit
+  6656714611f98600f0f8ec034ba23141a3ee4fc0 (v2.3.1).
+- Claude Code Energy Monitor, github.com/Magnus-Gille/claude-code-energy-monitor,
+  reviewed at commit a5192eb. Its token attribution research informed early
+  testing. Its energy coefficients were used until version 0.3.0 and have been
+  replaced: the current ranges are derived from primary sources in
+  docs/evidence/energy-derivation.md.
+
+No source code from either project is included in version 0.3.0. Their ideas,
+published findings and public documentation informed the product specification
+and methodology. See docs/provenance.md.
+
+Environmental and pricing figures are derived from published sources credited
+in src/data/impact-registry.v1.json and docs/evidence/energy-derivation.md. No
+source content is redistributed.

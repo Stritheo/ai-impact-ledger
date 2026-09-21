@@ -1,0 +1,186 @@
+{
+  "$schema": "../../schemas/impact-registry.schema.json",
+  "version": "2026-09-15.1",
+  "reviewedAt": "2026-09-15",
+  "nextReviewDue": "2026-10-15",
+  "priceBasis": "reference-as-of-review-date; not verified historical event-time prices",
+  "boundary": "inference-operations-only",
+  "evidence": {
+    "mlenergy-benchmark-paper-2026-09-18": {
+      "sourceUrl": "https://arxiv.org/abs/2505.06371",
+      "publisher": "Chung et al., University of Michigan",
+      "publicationDate": "2025-05-09",
+      "effectiveDate": null,
+      "geography": "not location specific; NVIDIA H100 GPUs",
+      "unit": "Wh per 1,000 tokens, whole facility",
+      "boundary": "whole facility: measured GPU prefill energy scaled for host, idle machines and data-centre overhead",
+      "derivation": "Table 4 reports energy per generation and the decode share for Llama 3.1 70B across three workloads, giving prefill energy per input token of 0.182 to 0.191 J. Scaled by 1.71 to 2.20 and converted at 1000/3600, that is 0.086 to 0.117 Wh per 1,000 tokens, used for fresh input and cache writes. Full working in docs/evidence/energy-derivation.md.",
+      "confidence": "low",
+      "licence": "factual-reference-only; no source content redistributed",
+      "reviewedAt": "2026-09-18",
+      "nextReviewDue": "2026-10-15"
+    },
+    "mlenergy-token-classes-2026-09-17": {
+      "sourceUrl": "https://ml.energy/leaderboard/",
+      "publisher": "ML.ENERGY (University of Michigan)",
+      "publicationDate": "2026-02-16",
+      "effectiveDate": null,
+      "geography": "not location specific; NVIDIA H100 and B200 GPUs",
+      "unit": "Wh per 1,000 tokens, whole facility",
+      "boundary": "whole facility: measured GPU energy scaled for host and idle machines and for data-centre overhead",
+      "derivation": "Output range from leaderboard chat measurements of models of 100 billion total parameters or more, filtered to configurations whose maximum batch is at least 64 sequences (P10 0.421 to P90 2.378 J per output token). Fresh input and cache write come from the benchmark paper, recorded separately as mlenergy-benchmark-paper-2026-09-18. Cached input is zero because no reviewed source measures it, so the ranges exclude the energy of re-reading cached context. Full working in docs/evidence/energy-derivation.md.",
+      "confidence": "low",
+      "licence": "factual-reference-only; no source content redistributed",
+      "reviewedAt": "2026-09-17",
+      "nextReviewDue": "2026-10-15"
+    },
+    "google-full-system-2026-09-17": {
+      "sourceUrl": "https://arxiv.org/abs/2508.15734",
+      "publisher": "Elsworth et al., Google",
+      "publicationDate": "2025-08-21",
+      "effectiveDate": null,
+      "geography": "Google data-centre fleet",
+      "unit": "dimensionless multipliers",
+      "boundary": "GPU energy to IT equipment (1.571) and IT equipment to whole facility (PUE 1.09 to 1.40)",
+      "derivation": "Google's measured median prompt splits 0.24 Wh into 0.14 accelerators, 0.06 host, 0.02 idle and 0.02 overhead, giving (0.24 - 0.02) / 0.14 = 1.571 from GPU to IT load. PUE low 1.09 is Google's fleet average; high 1.40 is the LBNL 2023 United States average. The paper also reports water usage effectiveness of 1.15 L/kWh for both 2023 and 2024 across the fleet serving its AI products, applied to energy excluding overhead, which is the high water bound here. The same paper supplies the television comparison: a modern television drawing approximately 100 watts.",
+      "confidence": "medium",
+      "licence": "factual-reference-only; no source content redistributed",
+      "reviewedAt": "2026-09-17",
+      "nextReviewDue": "2026-10-15"
+    },
+    "lbnl-water-2024": {
+      "sourceUrl": "https://eta-publications.lbl.gov/sites/default/files/2024-12/us_data_center_energy_usage_report_lbnl-2001637_0.pdf",
+      "publisher": "Lawrence Berkeley National Laboratory",
+      "publicationDate": "2024-12-19",
+      "effectiveDate": null,
+      "geography": "United States data-centre fleet",
+      "unit": "litres of on-site cooling water per kWh of IT-equipment electricity",
+      "boundary": "direct on-site cooling only; electricity-generation water and lifecycle water excluded",
+      "derivation": "Page 38 defines WUE as total site water divided by the electricity demand of the IT equipment, so water is applied to IT-equipment energy, not whole-facility energy. Page 48 gives the United States fleet average just over 0.36 L/kWh through 2023, used as the midpoint, and 0.45 to 0.48 L/kWh by 2028. The high bound is not taken from here: Google reports 1.15 L/kWh for the fleet serving its AI products, the only production AI measurement available, recorded under google-full-system-2026-09-17. Zero is retained only as an unestablished direct-cooling lower bound.",
+      "confidence": "low",
+      "licence": "factual-reference-only; no source content redistributed",
+      "reviewedAt": "2026-09-15",
+      "nextReviewDue": "2026-10-15"
+    },
+    "iea-electricity-2026": {
+      "sourceUrl": "https://www.iea.org/reports/electricity-2026/emissions",
+      "publisher": "International Energy Agency",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "geography": "global central value with illustrative regional values",
+      "unit": "grams CO2 per kWh of electricity generation",
+      "boundary": "operational electricity-generation CO2; not CO2e and not lifecycle emissions",
+      "derivation": "Applied to whole-facility electricity, which is what the grid supplies. Central scenario uses the published 2025 global intensity of 435 g CO2/kWh; 90 and 695 g CO2/kWh show regional variation and are not the location of a recorded call.",
+      "confidence": "low",
+      "licence": "factual-reference-only; no source content redistributed",
+      "reviewedAt": "2026-09-15",
+      "nextReviewDue": "2026-10-15"
+    },
+    "anthropic-pricing-2026-09-15": {
+      "sourceUrl": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "publisher": "Anthropic",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "geography": "global reference API pricing unless the source states a modifier",
+      "unit": "USD per million tokens",
+      "boundary": "reference API token price; subscription charges, discounts, credits, batch, fast and regional modifiers excluded unless observable",
+      "derivation": "Model-specific input, cache-read, five-minute cache-write, one-hour cache-write and output prices transcribed from the reviewed source page.",
+      "confidence": "high",
+      "licence": "factual-reference-only; no source content redistributed",
+      "reviewedAt": "2026-09-15",
+      "nextReviewDue": "2026-10-15"
+    },
+    "openai-astra-pricing-2026-09-15": {
+      "sourceUrl": "https://developers.openai.com/api/docs/models/gpt-6-astra",
+      "publisher": "OpenAI",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "geography": "global reference API pricing unless the source states a modifier",
+      "unit": "USD per million tokens",
+      "boundary": "reference API token price; subscription charges, discounts and credits excluded",
+      "derivation": "Input 10.00, cached input 1.00, cache writes 12.50 and output 50.00 USD per million tokens, read from the Astra model page on 18 September 2026 and matching the registry. Prompts above 272K input tokens are priced at 2x input and cache rates and 1.5x output for the whole request; such calls are left unpriced here. An earlier reading used the model comparison page, which omits that rule.",
+      "confidence": "high",
+      "licence": "factual-reference-only; no source content redistributed",
+      "reviewedAt": "2026-09-17",
+      "nextReviewDue": "2026-10-15"
+    },
+    "openai-sol-pricing-2026-09-15": {
+      "sourceUrl": "https://developers.openai.com/api/docs/models/gpt-5.6-sol",
+      "publisher": "OpenAI",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "geography": "global reference API pricing unless the source states a modifier",
+      "unit": "USD per million tokens",
+      "boundary": "reference API token price at the standard prompt size; subscription charges, discounts and credits excluded; long-context requests left unpriced",
+      "derivation": "Input 4.00, cached input 0.40 and output 20.00 USD per million tokens, with cache writes billed at 1.25x uncached input (5.00), read from the model page on 17 September 2026 and matching the registry. The page describes this as promotional pricing available at least through 21 November 2026, so it must be re-checked before then. Prompts above 272K input tokens are priced at 2x input and 1.5x output for the whole request; such calls are left unpriced here.",
+      "confidence": "high",
+      "licence": "factual-reference-only; no source content redistributed",
+      "reviewedAt": "2026-09-17",
+      "nextReviewDue": "2026-10-15"
+    },
+    "openai-terra-pricing-2026-09-15": {
+      "sourceUrl": "https://developers.openai.com/api/docs/models/gpt-5.6-terra",
+      "publisher": "OpenAI",
+      "publicationDate": null,
+      "effectiveDate": null,
+      "geography": "global reference API pricing unless the source states a modifier",
+      "unit": "USD per million tokens",
+      "boundary": "reference API token price at the standard prompt size; subscription charges, discounts and credits excluded; long-context requests left unpriced",
+      "derivation": "Input 2.00, cached input 0.20 and output 12.00 USD per million tokens, with cache writes billed at 1.25x uncached input (2.50), read from the model page on 17 September 2026 and matching the registry. Prompts above 272K input tokens are priced at 2x input and 1.5x output for the whole request; such calls are left unpriced here.",
+      "confidence": "high",
+      "licence": "factual-reference-only; no source content redistributed",
+      "reviewedAt": "2026-09-17",
+      "nextReviewDue": "2026-10-15"
+    }
+  },
+  "energy": {
+    "whPerThousandTokens": {
+      "input": {"low": 0.086, "high": 0.117, "evidenceRef": "mlenergy-benchmark-paper-2026-09-18"},
+      "cachedInput": {"low": 0, "high": 0, "upperBoundEstablished": false, "note": "no reviewed source measures the energy of re-reading cached context; the published range excludes it and is therefore not an upper bound on total energy"},
+      "cacheWrite": {"low": 0.086, "high": 0.117, "evidenceRef": "mlenergy-benchmark-paper-2026-09-18"},
+      "output": {"low": 0.2, "high": 1.45, "evidenceRef": "mlenergy-token-classes-2026-09-17"}
+    },
+    "overhead": {"pue": {"low": 1.09, "high": 1.4}},
+    "excludes": ["the energy of re-reading cached context, which is not measured by any reviewed source"],
+    "unknownModelMultiplier": 1,
+    "evidenceRef": "mlenergy-token-classes-2026-09-17",
+    "overheadEvidenceRef": "google-full-system-2026-09-17",
+    "derivation": "docs/evidence/energy-derivation.md",
+    "source": "https://ml.energy/leaderboard/",
+    "confidence": "low"
+  },
+  "water": {
+    "litresPerKwh": {"low": 0.0, "central": 0.36, "high": 1.15},
+    "evidenceRef": "lbnl-water-2024",
+    "source": "https://eta-publications.lbl.gov/sites/default/files/2024-12/us_data_center_energy_usage_report_lbnl-2001637_0.pdf",
+    "confidence": "low-to-medium for US fleet average; low for any individual inference",
+    "contexts": {
+      "unknown": "Infrastructure location and water source are unknown; no sustainability judgement is made.",
+      "rain-replenished-low-stress": "User-supplied context indicates relatively renewable local water, but provider sourcing remains unverified.",
+      "water-stressed-or-slow-recharge": "User-supplied context indicates higher community and replenishment risk; treat the same volume as more consequential."
+    }
+  },
+  "carbon": {
+    "gramsCo2PerKwh": {"low": 90, "central": 435, "high": 695},
+    "evidenceRef": "iea-electricity-2026",
+    "source": "https://www.iea.org/reports/electricity-2026/emissions",
+    "confidence": "low"
+  },
+  "analogies": {
+    "televisionWatts": 100,
+    "evidenceRef": "google-full-system-2026-09-17",
+    "waterGlassMillilitres": 250,
+    "waterGlassBasis": "a stated unit, not a measured figure: a 250 mL glass is a convention and is described as such"
+  },
+  "models": [
+    {"id": "claude-fable-5", "aliases": ["claude-fable-5", "fable"], "provider": "anthropic", "energyMultiplier": 1, "priceUsdPerMillion": {"input": 10, "cachedInput": 1, "cacheWrite": 12.5, "cacheWrite1h": 20, "output": 50}, "priceEvidenceRef": "anthropic-pricing-2026-09-15", "source": "https://platform.claude.com/docs/en/about-claude/pricing"},
+    {"id": "claude-fable-5-1", "aliases": [], "provider": "anthropic", "energyMultiplier": 1, "priceUsdPerMillion": {"input": 10, "cachedInput": 0.25, "cacheWrite": 12.5, "cacheWrite1h": 20, "output": 50}, "priceEvidenceRef": "anthropic-pricing-2026-09-15", "source": "https://platform.claude.com/docs/en/about-claude/pricing"},
+    {"id": "claude-opus-5", "aliases": ["claude-opus-5", "opus"], "provider": "anthropic", "energyMultiplier": 1, "priceUsdPerMillion": {"input": 5, "cachedInput": 0.5, "cacheWrite": 6.25, "cacheWrite1h": 10, "output": 25}, "priceEvidenceRef": "anthropic-pricing-2026-09-15", "source": "https://platform.claude.com/docs/en/about-claude/pricing"},
+    {"id": "claude-opus-4-8", "aliases": [], "provider": "anthropic", "energyMultiplier": 1, "priceUsdPerMillion": {"input": 5, "cachedInput": 0.5, "cacheWrite": 6.25, "cacheWrite1h": 10, "output": 25}, "priceEvidenceRef": "anthropic-pricing-2026-09-15", "source": "https://platform.claude.com/docs/en/about-claude/pricing"},
+    {"id": "claude-sonnet-5", "aliases": ["claude-sonnet-5", "sonnet"], "provider": "anthropic", "energyMultiplier": 1, "priceUsdPerMillion": {"input": 2, "cachedInput": 0.2, "cacheWrite": 2.5, "cacheWrite1h": 4, "output": 10}, "priceEvidenceRef": "anthropic-pricing-2026-09-15", "source": "https://platform.claude.com/docs/en/about-claude/pricing"},
+    {"id": "claude-haiku-4-5", "aliases": [], "provider": "anthropic", "energyMultiplier": 1, "priceUsdPerMillion": {"input": 1, "cachedInput": 0.1, "cacheWrite": 1.25, "cacheWrite1h": 2, "output": 5}, "priceEvidenceRef": "anthropic-pricing-2026-09-15", "source": "https://platform.claude.com/docs/en/about-claude/pricing"},
+    {"id": "gpt-6-astra", "aliases": ["gpt-6-astra", "astra"], "provider": "openai", "energyMultiplier": 1, "priceUsdPerMillion": {"input": 10, "cachedInput": 1, "cacheWrite": 12.5, "output": 50}, "standardPriceMaxInputTokens": 272000, "priceEvidenceRef": "openai-astra-pricing-2026-09-15", "source": "https://developers.openai.com/api/docs/models/compare"},
+    {"id": "gpt-5.6-sol", "aliases": ["gpt-5.6-sol", "soul", "sol"], "provider": "openai", "energyMultiplier": 1, "priceUsdPerMillion": {"input": 4, "cachedInput": 0.4, "cacheWrite": 5, "output": 20}, "standardPriceMaxInputTokens": 272000, "priceEvidenceRef": "openai-sol-pricing-2026-09-15", "source": "https://developers.openai.com/api/docs/models/gpt-5.6-sol"},
+    {"id": "gpt-5.6-terra", "aliases": ["gpt-5.6-terra", "terra"], "provider": "openai", "energyMultiplier": 1, "priceUsdPerMillion": {"input": 2, "cachedInput": 0.2, "cacheWrite": 2.5, "output": 12}, "standardPriceMaxInputTokens": 272000, "priceEvidenceRef": "openai-terra-pricing-2026-09-15", "source": "https://developers.openai.com/api/docs/models/gpt-5.6-terra"}
+  ]
+}

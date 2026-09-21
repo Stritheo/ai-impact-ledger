@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Impact Registry",
+  "type": "object",
+  "required": ["version", "reviewedAt", "nextReviewDue", "boundary", "priceBasis", "evidence", "energy", "water", "carbon", "models"],
+  "$defs": {
+    "range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["low", "high"],
+      "properties": {"low": {"type": "number", "minimum": 0}, "high": {"type": "number", "minimum": 0}}
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceUrl", "publisher", "publicationDate", "effectiveDate", "geography", "unit", "boundary", "derivation", "confidence", "licence", "reviewedAt", "nextReviewDue"],
+      "properties": {
+        "sourceUrl": {"type": "string", "pattern": "^https://"},
+        "publisher": {"type": "string", "minLength": 1},
+        "publicationDate": {"type": ["string", "null"], "format": "date"},
+        "effectiveDate": {"type": ["string", "null"], "format": "date"},
+        "geography": {"type": "string", "minLength": 1},
+        "unit": {"type": "string", "minLength": 1},
+        "boundary": {"type": "string", "minLength": 1},
+        "derivation": {"type": "string", "minLength": 1},
+        "confidence": {"enum": ["low", "medium", "high"], "description": "How far the figure can be relied on for the use this product makes of it, not the standing of the source."},
+        "licence": {"type": "string", "minLength": 1},
+        "reviewedAt": {"type": "string", "format": "date"},
+        "nextReviewDue": {"type": "string", "format": "date"}
+      }
+    }
+  },
+  "properties": {
+    "version": {"type": "string"},
+    "reviewedAt": {"type": "string", "format": "date"},
+    "nextReviewDue": {"type": "string", "format": "date"},
+    "boundary": {"const": "inference-operations-only"},
+    "priceBasis": {"type": "string", "minLength": 1},
+    "evidence": {"type": "object", "additionalProperties": {"$ref": "#/$defs/evidence"}},
+    "energy": {
+      "type": "object",
+      "required": ["whPerThousandTokens", "overhead", "excludes", "evidenceRef", "overheadEvidenceRef", "derivation", "source", "confidence"],
+      "properties": {
+        "whPerThousandTokens": {
+          "type": "object",
+          "required": ["input", "cachedInput", "cacheWrite", "output"],
+          "additionalProperties": {"$ref": "#/$defs/range"},
+          "description": "Derived low and high whole-facility energy per 1,000 tokens. No central value: no reviewed source supports one."
+        },
+        "overhead": {"type": "object", "required": ["pue"], "properties": {"pue": {"$ref": "#/$defs/range"}}},
+        "excludes": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "water": {"type": "object", "required": ["litresPerKwh", "evidenceRef", "source", "confidence", "contexts"]},
+    "carbon": {"type": "object", "required": ["gramsCo2PerKwh", "evidenceRef", "source", "confidence"], "not": {"required": ["gramsCo2ePerKwh"]}},
+    "models": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "aliases", "provider", "energyMultiplier", "priceUsdPerMillion", "source"],
+        "properties": {"energyMultiplier": {"const": 1}},
+        "oneOf": [
+          {"required": ["priceEvidenceRef"], "properties": {"priceUsdPerMillion": {"type": "object"}}},
+          {"required": ["unpricedReason"], "properties": {"priceUsdPerMillion": {"type": "null"}}}
+        ]
+      }
+    }
+  }
+}

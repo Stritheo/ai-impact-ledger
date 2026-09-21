@@ -1,0 +1,175 @@
+{
+  "name": "ai-impact-ledger",
+  "displayName": "AI Impact Ledger",
+  "description": "Local, transparent estimates of AI token cost and environmental impact.",
+  "version": "0.3.0",
+  "publisher": "stritheo",
+  "license": "MIT",
+  "private": true,
+  "type": "commonjs",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "ai",
+    "tokens",
+    "cost",
+    "energy",
+    "water",
+    "carbon",
+    "privacy"
+  ],
+  "main": "./src/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    }
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "aiImpactLedger.refresh",
+        "title": "AI Impact Ledger: Refresh"
+      },
+      {
+        "command": "aiImpactLedger.showReport",
+        "title": "AI Impact Ledger: Show Report"
+      },
+      {
+        "command": "aiImpactLedger.openSettings",
+        "title": "AI Impact Ledger: Open Settings"
+      },
+      {
+        "command": "aiImpactLedger.purgeDetail",
+        "title": "AI Impact Ledger: Purge Detailed Records"
+      },
+      {
+        "command": "aiImpactLedger.rebuildFromLogs",
+        "title": "AI Impact Ledger: Rebuild From Logs"
+      }
+    ],
+    "configuration": {
+      "title": "AI Impact Ledger",
+      "properties": {
+        "aiImpactLedger.refreshMinutes": {
+          "type": "number",
+          "default": 5,
+          "minimum": 1,
+          "maximum": 1440,
+          "description": "Minutes between local log scans. No network request is made."
+        },
+        "aiImpactLedger.detailRetentionDays": {
+          "type": "number",
+          "default": 90,
+          "minimum": 1,
+          "maximum": 365,
+          "description": "Days to retain numeric per-call records."
+        },
+        "aiImpactLedger.currency": {
+          "type": "string",
+          "enum": [
+            "USD",
+            "AUD",
+            "GBP",
+            "EUR"
+          ],
+          "default": "USD",
+          "description": "Display currency for API-equivalent cost estimates. Uses a reviewed offline reference rate."
+        },
+        "aiImpactLedger.waterUnits": {
+          "type": "string",
+          "enum": [
+            "metric",
+            "us",
+            "uk"
+          ],
+          "default": "metric",
+          "description": "Water display units: litres, US liquid gallons or UK imperial gallons."
+        },
+        "aiImpactLedger.reportingPeriod": {
+          "type": "string",
+          "enum": [
+            "today",
+            "7d",
+            "30d",
+            "90d",
+            "cumulative"
+          ],
+          "default": "today",
+          "description": "Local calendar period displayed in the status bar and report."
+        },
+        "aiImpactLedger.showAnalogy": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show or hide the everyday analogy. Method and limitations remain visible."
+        },
+        "aiImpactLedger.analogyFamily": {
+          "type": "string",
+          "enum": [
+            "television",
+            "none"
+          ],
+          "default": "television",
+          "description": "Everyday comparison shown in the report: hours of television and glasses of water, or none."
+        },
+        "aiImpactLedger.statusBarMeasure": {
+          "type": "string",
+          "enum": [
+            "cost",
+            "energy"
+          ],
+          "default": "cost",
+          "description": "Lead measure shown in the quiet VS Code status bar."
+        },
+        "aiImpactLedger.contributionMeasure": {
+          "type": "string",
+          "enum": [
+            "energy",
+            "cost",
+            "tokens",
+            "calls"
+          ],
+          "default": "energy",
+          "description": "Basis for the Claude and Codex contribution bar."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node scripts/check-source.mjs",
+    "security": "node scripts/security-audit.mjs",
+    "sbom": "node scripts/generate-sbom.mjs",
+    "evidence:check": "node scripts/check-evidence.mjs",
+    "reconcile": "node scripts/reconcile-usage.cjs",
+    "verify:counting": "node scripts/verify-counting.mjs",
+    "verify": "npm test && npm run check && npm run security",
+    "assure": "node scripts/assure.mjs",
+    "package:vsix": "npm run verify && npm run sbom && node scripts/package-vsix.mjs"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "SECURITY.md",
+    "PRIVACY.md",
+    "NOTICE",
+    "sbom.cdx.json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Stritheo/ai-impact-ledger.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Stritheo/ai-impact-ledger/issues"
+  },
+  "homepage": "https://github.com/Stritheo/ai-impact-ledger#readme",
+  "author": "Miles Sowden"
+}

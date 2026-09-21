@@ -1,0 +1,9 @@
+{
+  "version": "2026-09-11.1",
+  "sourceDate": "2026-09-11",
+  "reviewedAt": "2026-09-13",
+  "nextReviewDue": "2026-10-11",
+  "source": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html",
+  "method": "ECB information-only spot reference rates, quoted per EUR; USD conversion is target-per-EUR divided by 1.1592 USD-per-EUR. These are display estimates, not transaction rates.",
+  "eurBase": {"USD": 1.1592, "AUD": 1.6161, "GBP": 0.85815, "EUR": 1}
+}
