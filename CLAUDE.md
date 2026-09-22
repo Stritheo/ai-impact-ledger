@@ -41,6 +41,17 @@ impact of AI coding work. Nothing it records leaves the machine.
 - Comments explain why, not what.
 - AU/UK spelling in user-facing copy.
 
+## Packaging gotchas
+
+- **`CHANGELOG.md` ships inside the VSIX.** Anything written there reaches every
+  installation, not just readers of this repository.
+- **Two file lists.** `scripts/package-vsix.mjs` keeps its own `included` array,
+  separate from `files` in `package.json`. A new shipped file must be added to
+  both, and to the fixture list in `test/artefact-reproducibility.test.js`.
+- **The artefact must be reproducible.** The packaged VSIX has to hash
+  identically when built again from the same source. A release is published only
+  once a hosted build of the commit matches a clean local build.
+
 ## Layout
 
 - `src/core/` — scanning, parsing, estimation, storage, reporting. Pure where
