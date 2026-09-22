@@ -3,3 +3,7 @@ coverage/
 node_modules/
 .DS_Store
 *.log
+
+# Session state, never published
+CHECKPOINT.md
+.claude/
