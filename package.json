@@ -149,6 +149,7 @@
     "evidence:check": "node scripts/check-evidence.mjs",
     "reconcile": "node scripts/reconcile-usage.cjs",
     "verify:counting": "node scripts/verify-counting.mjs",
+    "export:usage": "node src/cli/usage-export.js",
     "verify": "npm test && npm run check && npm run security",
     "assure": "node scripts/assure.mjs",
     "package:vsix": "npm run verify && npm run sbom && node scripts/package-vsix.mjs"

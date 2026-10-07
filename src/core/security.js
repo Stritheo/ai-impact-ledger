@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('node:crypto');
+const path = require('node:path');
 
 function safeInteger(value) {
   return Number.isSafeInteger(value) && value >= 0 ? value : 0;
@@ -45,4 +46,12 @@ function hashEventId(id, secret) {
   return crypto.createHmac('sha256', secret).update(id).digest('hex');
 }
 
-module.exports = { sanitiseEvent, hashEventId, normaliseModel, normaliseGeo };
+// A consumer must be able to find its own project without being told a secret,
+// so the key is a plain hash of the folder. It keeps folder names out of the
+// export; it does not hide a folder from someone who can already guess it.
+function projectKey(folder) {
+  if (typeof folder !== 'string' || folder.length > 4096 || !path.isAbsolute(folder)) return null;
+  return crypto.createHash('sha256').update(`ai-impact-ledger/project/v1:${path.resolve(folder)}`).digest('hex');
+}
+
+module.exports = { sanitiseEvent, hashEventId, normaliseModel, normaliseGeo, projectKey };

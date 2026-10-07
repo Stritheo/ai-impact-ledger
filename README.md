@@ -75,6 +75,27 @@ credentials, usernames or raw log lines.
 - After its initial inventory, each refresh reads only changed log files and
   reports its own scan time in the local report.
 
+## Usage export for scripts
+
+```sh
+npm run export:usage -- --out ~/usage.json
+node src/cli/usage-export.js --key-for /path/to/project
+```
+
+A read-only command that writes JSON totals of tokens and API-price cost for
+the rolling 5 hours, today, the last seven days and the calendar month to date,
+split by provider and by project. It reads the same logs with the same parsers
+and prices as the extension, never opens the extension's store, and writes
+only the file named by `--out` (owner-only), or standard output.
+
+A project is the folder a session was started in, identified by a SHA-256 key
+of that folder, never by the folder itself. `--key-for` prints the key for a
+folder, so a script can find its own project. The key keeps folder names out
+of the file; anyone who can guess a folder can still confirm it. The figures
+are partial: use of the same plans on the web, desktop or phone is not in the
+local logs. A call the registry cannot price is counted as unpriced, not
+guessed.
+
 ## Development and assurance
 
 Requirements and controls are indexed in [the documentation guide](docs/README.md).

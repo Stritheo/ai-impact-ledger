@@ -15,8 +15,8 @@ const MAX_LINE_BYTES = 8 * 1_048_576;
 // speed or service tier.
 const PARSER_VERSION = '5';
 
-async function parseLargeLog(handle, provider, sourceName) {
-  const accumulator = createLineAccumulator(provider, sourceName);
+async function parseLargeLog(handle, provider, sourceName, options) {
+  const accumulator = createLineAccumulator(provider, sourceName, options);
   let fragments = [];
   let lineBytes = 0;
   let dropping = false;
@@ -55,10 +55,15 @@ async function parseLargeLog(handle, provider, sourceName) {
     unmatchedLegacyRecords: diagnostics.unmatchedLegacyRecords};
 }
 
-async function scanRoot(root, provider, checkpoints = {}, secret = '') {
+// options.modifiedSince leaves unread any file last written before that
+// instant: a log cannot hold a call later than its own last write.
+// options.project asks the parsers to attribute each call to its session folder.
+async function scanRoot(root, provider, checkpoints = {}, secret = '', options = {}) {
   const startedAt = performance.now();
   const diagnostics = {filesRead: 0, filesSkipped: 0, linesSkipped: 0, recordsSkipped: 0, schemaUnknown: 0,
-    unmatchedLegacyRecords: 0, duplicateResponseIds: 0, linksSkipped: 0, unchangedFiles: 0, malformedRoots: 0};
+    unmatchedLegacyRecords: 0, duplicateResponseIds: 0, linksSkipped: 0, unchangedFiles: 0, malformedRoots: 0,
+    filesBeforeWindow: 0};
+  const parserOptions = {project: options.project === true};
   const events = [];
   const nextCheckpoints = {};
   let canonicalRoot;
@@ -103,6 +108,10 @@ async function scanRoot(root, provider, checkpoints = {}, secret = '') {
           const current = await fs.promises.lstat(canonical);
           if (!stat.isFile() || current.isSymbolicLink() || stat.ino !== current.ino || stat.dev !== current.dev) throw new Error('unsafe log file');
           if (stat.size > MAX_FILE_BYTES) throw new Error('file too large');
+          if (Number.isFinite(options.modifiedSince) && stat.mtimeMs < options.modifiedSince) {
+            diagnostics.filesBeforeWindow += 1;
+            continue;
+          }
           const relativeName = path.relative(canonicalRoot, canonical);
           const fileKey = secret
             ? crypto.createHmac('sha256', secret).update(`${PARSER_VERSION}:${relativeName}`).digest('hex')
@@ -124,7 +133,7 @@ async function scanRoot(root, provider, checkpoints = {}, secret = '') {
           let fileSchemaUnknown = 0;
           let fileUnmatchedLegacy = 0;
           if (stat.size > LARGE_FILE_BYTES) {
-            const parsed = await parseLargeLog(handle, provider, entry.name);
+            const parsed = await parseLargeLog(handle, provider, entry.name, parserOptions);
             events.push(...parsed.events);
             fileLinesSkipped = parsed.linesSkipped;
             fileRecordsSkipped = parsed.recordsSkipped;
@@ -133,7 +142,7 @@ async function scanRoot(root, provider, checkpoints = {}, secret = '') {
           } else {
             const lines = (await handle.readFile({encoding: 'utf8'})).split(/\r?\n/);
             fileLinesSkipped = lines.filter((line) => line.length > MAX_LINE_BYTES).length;
-            const accumulator = createLineAccumulator(provider, entry.name);
+            const accumulator = createLineAccumulator(provider, entry.name, parserOptions);
             for (const line of lines) accumulator.add(line);
             events.push(...accumulator.events());
             const fileDiagnostics = accumulator.diagnostics();

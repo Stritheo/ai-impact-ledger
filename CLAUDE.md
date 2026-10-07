@@ -13,6 +13,8 @@ impact of AI coding work. Nothing it records leaves the machine.
 - `npm run verify:counting` — reconciles what the ledger counts against the
   totals the providers state in their own logs. Reads local logs and emits
   counts only.
+- `npm run export:usage` — read-only JSON totals of tokens and API-price cost
+  by window, provider and hashed project folder. Writes only `--out`.
 - `npm run evidence:check` — checks that every factor and price resolves to a
   sourced evidence entry.
 - `npm run package:vsix` — verifies, regenerates the SBOM and writes a

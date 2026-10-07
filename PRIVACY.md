@@ -13,6 +13,16 @@ File-change checkpoints are also keyed hashes; log paths are not stored.
 Where a call used a non-standard speed or service tier, only the fact that it
 was non-standard is kept, never the tier itself.
 
+## Usage export
+
+The usage export (`npm run export:usage`) reads the same logs. To group calls
+by project it reads the folder each session was started in and, inside the
+parser, replaces it with a SHA-256 key; the folder is never stored or written.
+The key is not secret, so that a local script can find its own project, which
+means anyone who can guess a folder can confirm it. The export contains keys,
+counts, model names and cost totals only, and is written only where you ask,
+with owner-only permissions.
+
 ## Retention
 
 Detailed numeric records expire after the configured retention period, which
