@@ -5,6 +5,15 @@ public release; earlier versions were private.
 
 Dates are ISO 8601. Versions follow semantic versioning.
 
+## Unreleased
+
+### Added
+
+- `npm run export:usage`, a read-only command that writes JSON totals of
+  tokens and API-price cost for the rolling 5 hours, today, the last seven
+  days and the month to date, by provider and by project. A project is a
+  SHA-256 key of the folder a session started in; folders are never stored.
+
 ## 0.3.0 — unreleased
 
 ### Added

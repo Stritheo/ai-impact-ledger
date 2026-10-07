@@ -12,7 +12,10 @@ values, monthly registry updates and packaged extension artefacts.
 
 ## Controls
 
-- Fixed allowlisted roots; no paths taken from log contents.
+- Fixed allowlisted roots; no path taken from log contents is ever opened.
+- The usage export reads a session's starting folder only to hash it inside
+  the parser. The folder is never opened, stored or written; the export is
+  written atomically, owner-only, and only where the caller names.
 - Symbolic links are not followed and files outside their canonical root fail.
 - 8 MiB line and 256 MiB file limits bound parsing; oversized inputs are
   disclosed as incomplete coverage rather than silently omitted.
@@ -38,3 +41,6 @@ identity is checked, but an intermediate-directory race is not fully excluded
 by the Node filesystem API. A multi-file v2 update is not one transaction; only
 one interrupted-commit recovery scenario is tested. Very large directory trees
 may be expensive to enumerate or exceed scanner depth and changed-file limits.
+The usage export's project keys are unkeyed hashes by design, so a consumer
+can find its own project without a shared secret; anyone holding an export and
+a guess at a folder can confirm the guess.

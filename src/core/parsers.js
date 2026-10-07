@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('node:path');
-const {normaliseModel, normaliseGeo} = require('./security');
+const {normaliseModel, normaliseGeo, projectKey} = require('./security');
 
 const MAX_TOKENS = 100_000_000;
 const EARLIEST_MS = Date.parse('2023-01-01T00:00:00Z');
@@ -107,14 +107,25 @@ function nonStandardTier(usage) {
     && usage[field] !== 'standard');
 }
 
-function createClaudeAccumulator(sourceName) {
+// A session's spend belongs to the folder it was started in. The folder a call
+// records drifts as a session moves into worktrees and subfolders, so only the
+// first one is used, and only its hash ever leaves the accumulator.
+function attribute(events, project, folder) {
+  if (!project) return events;
+  const key = projectKey(folder);
+  return events.map((event) => ({...event, project: key}));
+}
+
+function createClaudeAccumulator(sourceName, options = {}) {
   const requests = new Map();
   let recordsSkipped = 0;
   let schemaUnknown = 0;
+  let folder = null;
   return {
     add(line) {
       const record = parseLine(line);
       if (!record) return;
+      if (options.project && folder === null && typeof record.cwd === 'string') folder = record.cwd;
       if (record.type !== 'assistant' || typeof record.requestId !== 'string') {
         if (carriesUsage(record, CLAUDE_USAGE_FIELDS)) schemaUnknown += 1;
         return;
@@ -141,7 +152,7 @@ function createClaudeAccumulator(sourceName) {
       if (!previous || score(event.tokens) >= score(previous.tokens)) requests.set(event.id, event);
       else if (event.nonStandardTier) previous.nonStandardTier = true;
     },
-    events() { return [...requests.values()]; },
+    events() { return attribute([...requests.values()], options.project, folder); },
     diagnostics() { return {recordsSkipped, schemaUnknown, unmatchedLegacyRecords: 0,
       duplicateResponseIds: 0, recordsWithoutIdentifier: 0}; }
   };
@@ -152,7 +163,7 @@ function createClaudeAccumulator(sourceName) {
 // response is inferred each time that total changes. A file holding both
 // schemas describes the same requests twice, so the current schema wins and any
 // legacy entry it does not account for is disclosed rather than added.
-function createCodexAccumulator(sourceName) {
+function createCodexAccumulator(sourceName, options = {}) {
   const responses = new Map();
   const legacy = [];
   const source = path.basename(sourceName || 'unknown');
@@ -166,6 +177,7 @@ function createCodexAccumulator(sourceName) {
   let recordsWithoutIdentifier = 0;
   let lastLegacyUsage = null;
   let counted = false;
+  let folder = null;
 
   const usageKey = (tokens) => `${tokens.input}/${tokens.cachedInput}/${tokens.cacheWrite}/${tokens.output}`;
 
@@ -173,6 +185,9 @@ function createCodexAccumulator(sourceName) {
     add(line) {
       const record = parseLine(line);
       if (!record) return;
+      // Older rollouts open with a turn context rather than session metadata.
+      if (options.project && folder === null && (record.type === 'session_meta' || record.type === 'turn_context')
+          && typeof record.payload?.cwd === 'string') folder = record.payload.cwd;
       if (record.type === 'turn_context') {
         context = {
           id: shortText(record.payload?.turn_id, null),
@@ -229,7 +244,7 @@ function createCodexAccumulator(sourceName) {
       });
     },
     events() {
-      if (responses.size === 0) return legacy;
+      if (responses.size === 0) return attribute(legacy, options.project, folder);
       if (!counted) {
         counted = true;
         const remaining = new Map();
@@ -244,7 +259,7 @@ function createCodexAccumulator(sourceName) {
           else unmatchedLegacyRecords += 1;
         }
       }
-      return [...responses.values()];
+      return attribute([...responses.values()], options.project, folder);
     },
     // Reading diagnostics must not depend on whether events() has been called.
     diagnostics() {
@@ -254,8 +269,8 @@ function createCodexAccumulator(sourceName) {
   };
 }
 
-function createLineAccumulator(provider, sourceName) {
-  return provider === 'anthropic' ? createClaudeAccumulator(sourceName) : createCodexAccumulator(sourceName);
+function createLineAccumulator(provider, sourceName, options = {}) {
+  return provider === 'anthropic' ? createClaudeAccumulator(sourceName, options) : createCodexAccumulator(sourceName, options);
 }
 
 function parseClaudeLines(lines, sourceName) {
