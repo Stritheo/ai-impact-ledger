@@ -17,7 +17,7 @@ function codexCall(model, input, cachedInput = 0) {
 // test previously asserted that Astra had no threshold.
 test('the registry records the long-context threshold OpenAI states for every priced OpenAI model', () => {
   const byId = Object.fromEntries(registry.models.map((model) => [model.id, model]));
-  for (const id of ['gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-6-astra']) {
+  for (const id of ['gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-6-astra', 'gpt-6.1-sol', 'gpt-6-luna']) {
     assert.equal(byId[id].standardPriceMaxInputTokens, 272000, id);
   }
 });
@@ -129,4 +129,18 @@ test('a Haiku 5.5 prompt above 100,000 tokens is left unpriced, not priced at th
   assert.ok(estimateEvent(atLimit, registry).cost.central > 0);
   assert.equal(estimateEvent(overLimit, registry).cost.reason, 'non-standard-tier');
   assert.ok(estimateEvent(claudeCall('claude-opus-5-5', 900000, 890000), registry).cost.central > 0);
+});
+
+// Reviewed 22 October 2026 against each model's own page on developers.openai.com.
+test('the registry carries the GPT-6.1 Sol and GPT-6 Luna prices OpenAI states', () => {
+  const byId = Object.fromEntries(registry.models.map((model) => [model.id, model]));
+  assert.deepEqual(byId['gpt-6.1-sol'].priceUsdPerMillion, {input: 2, cachedInput: 0.1, cacheWrite: 2.5, output: 10});
+  assert.deepEqual(byId['gpt-6-luna'].priceUsdPerMillion, {input: 0.1, cachedInput: 0.01, cacheWrite: 0.125, output: 0.5});
+});
+
+// GPT-5.6 Sol's page states its price is promotional "at least through
+// November 21, 2026", so the review must fall due no later than that.
+test('a promotional price is reviewed before the promotion can end', () => {
+  const sol = registry.evidence['openai-sol-pricing-2026-09-15'];
+  assert.ok(Date.parse(sol.nextReviewDue) <= Date.parse('2026-11-21'), sol.nextReviewDue);
 });

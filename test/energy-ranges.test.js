@@ -54,7 +54,7 @@ test('water is measured against IT electricity and carbon against facility elect
   assert.equal(estimate.water.low, 0, 'the lower water bound is not established');
   assert.equal(estimate.water.mid, 0.000207);
   // carbon = facility energy x grid intensity
-  assert.equal(estimate.carbonGrams.low, 0.03222);
+  assert.equal(estimate.carbonGrams.low, 0.06086);
   assert.equal(estimate.carbonGrams.mid, 0.311895);
   assert.equal(estimate.carbonGrams.high, 0.74782);
   assert.equal(estimate.boundary, 'inference-operations-only');
@@ -68,7 +68,7 @@ test('the report shows ranges, no central figure, and says what is excluded', ()
   assert.doesNotMatch(html, /one-third and three times/, 'the threefold scenario wording is gone');
   assert.match(html, /re-reading cached context/i);
   assert.match(html, /0–0\.00088 L/);
-  assert.match(html, /0\.032–0\.75 g CO₂/);
+  assert.match(html, /0\.061–0\.75 g CO₂/);
   assert.match(html, /midpoint/i, 'the analogy and share say they use a midpoint');
   assert.match(summary.analogy, /0\.0072 hours of television/, 'the analogy uses the midpoint');
   assert.match(formatAnalogy(estimateEvent(EVENT, registry), registry), /0\.00083 glasses of 250 mL/);
@@ -90,4 +90,14 @@ test('provider and model shares use the midpoint of the range', () => {
   assert.equal(summary.providers.openai.energyWh, 0.717);
   assert.equal(summary.total.energyWh.mid, 1.434);
   assert.match(reportHtml(summary), /Claude 50\.0% · /);
+});
+
+// Reviewed 22 October 2026 against the Electricity 2026 report PDF (page 106).
+// Every bound must be a 2025 value, like the central figure. The earlier low
+// of 90 was the EU's forecast for 2030; the lowest 2025 value given is the
+// EU's 170, and the highest is India's 695.
+test('the carbon range uses 2025 values only, from the cited report', () => {
+  assert.deepEqual(registry.carbon.gramsCo2PerKwh, {low: 170, central: 435, high: 695});
+  assert.match(registry.evidence[registry.carbon.evidenceRef].derivation, /2025/);
+  assert.doesNotMatch(registry.evidence[registry.carbon.evidenceRef].derivation, /\b90 and 695\b/);
 });

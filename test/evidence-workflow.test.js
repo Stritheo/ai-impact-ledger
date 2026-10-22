@@ -156,3 +156,38 @@ test('a source that changes daily by design is checked for structure, not hashed
     baselines: {}, now: NOW});
   assert.equal(restructured[0].status, 'structure-changed');
 });
+
+// Owner's ruling of 22 October 2026: a GitHub repository may serve as a
+// primary source only if it is named here, and only at a pinned commit, so
+// the hashed bytes cannot move and the host cannot be pointed at anyone's
+// repository.
+function citing(sourceUrl) {
+  return {...registry, evidence: {...registry.evidence,
+    candidate: {...Object.values(registry.evidence)[0], sourceUrl}}};
+}
+const SHA = '0123456789abcdef0123456789abcdef01234567';
+
+test('a named repository at a pinned commit is checked byte for byte', async () => {
+  const {sourcesFrom} = await load();
+  for (const url of [
+    `https://raw.githubusercontent.com/genai-impact/ecologits/${SHA}/docs/methodology/llm_inference.md`,
+    `https://raw.githubusercontent.com/Green-Software-Foundation/sci-ai/${SHA}/SPEC.md`
+  ]) {
+    const source = sourcesFrom(citing(url), fxRegistry).find((entry) => entry.url === url);
+    assert.equal(source.mode, 'binary', url);
+    assert.equal(source.checkUrl, url);
+  }
+});
+
+test('an unnamed repository, a branch or a rendered page is refused', async () => {
+  const {sourcesFrom} = await load();
+  for (const url of [
+    `https://raw.githubusercontent.com/someone/ecologits/${SHA}/README.md`,
+    'https://raw.githubusercontent.com/genai-impact/ecologits/main/docs/methodology/llm_inference.md',
+    `https://raw.githubusercontent.com/genai-impact/ecologits/${SHA.slice(0, 12)}/README.md`,
+    `https://raw.githubusercontent.com/genai-impact/ecologits/${SHA}/../../someone/x/${SHA}/a.md`,
+    `https://github.com/genai-impact/ecologits/blob/${SHA}/README.md`
+  ]) {
+    assert.throws(() => sourcesFrom(citing(url), fxRegistry), /allowlist|pinned/, url);
+  }
+});

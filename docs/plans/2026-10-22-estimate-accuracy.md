@@ -6,8 +6,9 @@ phase only; no feature code. Gates part-restored (section 2).
 ## 1. Why now
 
 An offset feature turns the carbon estimate into tonnes a user pays for. On
-this machine's logs (33 Claude calls, 1 to 22 October) the estimate is 1.2 to
-32.8 g CO2, a 26-fold spread, and 96.8 per cent of the tokens behind it
+this machine's logs (33 Claude calls, 1 to 22 October) the estimate is 2.3 to
+32.8 g CO2, a 14-fold spread (26-fold before the carbon correction in
+section 2), and 96.8 per cent of the tokens behind it
 (3,898,331 of 4,026,396) are cache reads that the registry counts as zero
 energy. Offsetting even the high bound would not be conservative, because the
 largest token class is outside it.
@@ -31,11 +32,40 @@ passed its review date on 15 October. Three tests fail for the same reason on
   first. On the sample this prices all 33 calls, which were previously
   unpriced.
 
-Still overdue, and not re-reviewed here because this environment cannot
-reach the hosts: OpenAI pricing (`developers.openai.com`), ML.ENERGY
-(`ml.energy`), the Google and ML.ENERGY papers (`arxiv.org`), LBNL water and
-IEA carbon, and the registry-level review date. Moving those dates without
-reading the sources would be a false review, so they stay red until read.
+- **Re-reviews OpenAI pricing.** Astra, GPT-5.6 Sol and Terra match their
+  model pages. Sol's page still calls its price promotional "at least through
+  November 21, 2026", so OpenAI entries now fall due on 2026-11-21, and a test
+  holds that date.
+- **Adds GPT-6.1 Sol** ($2 input, $0.10 cached, $2.50 cache write, $10
+  output) and **GPT-6 Luna** ($0.10, $0.01, $0.125, $0.50), both with the
+  272K long-context rule. Tests written first.
+- **Re-reviews the energy sources.** Neither arXiv paper has a new version
+  (ML.ENERGY Benchmark is still v2 of 16 October 2025; Google is still v1),
+  and both PDFs hash identically to the files the derivation recorded. The
+  ML.ENERGY leaderboard index hashes identically to its September baseline.
+  Every energy figure therefore stands unchanged.
+- **Refreshes `evidence/source-baselines.json`** for each source re-read,
+  keeping LBNL's September hash because LBNL could not be fetched.
+
+- **Re-reviews LBNL water.** The PDF hashes identically to the file the
+  derivation used.
+- **Updates exchange rates** to the ECB reference rates of 22 October 2026
+  (USD 1.1205, AUD 1.5980, GBP 0.83770 per EUR). Two tests that pin the
+  displayed rate move with it.
+- **Admits named GitHub repositories at pinned commits** as evidence sources,
+  per the owner's ruling (section 3.3): `genai-impact/ecologits` and
+  `Green-Software-Foundation/sci-ai`, on `raw.githubusercontent.com`, at a
+  full 40-character commit hash only. Tests written first.
+
+- **Re-reviews IEA carbon and corrects its low bound.** The report PDF
+  (page 106) confirms 435 g CO2/kWh as the 2025 global average and 695 as
+  India's 2025 value. The registry's low of 90 was the EU's forecast for
+  2030, not a 2025 value; the lowest 2025 value given is the EU's 170. The
+  low bound is now 170, so every bound is a 2025 figure. Low carbon estimates
+  rise by a factor of 1.89; central and high are unchanged. Two tests pinning
+  the old low output move with it, and a new test holds the 2025 rule.
+- **Moves the registry-level review** to 2026-11-22, now that every entry is
+  current. All gates pass.
 
 ## 3. Ranked by effect on the carbon range
 
@@ -78,10 +108,11 @@ class is excluded.
 
 ### 3.2 Grid intensity by region
 
-The carbon factor is a global 90 to 695 g CO2/kWh (IEA, low confidence).
+The carbon factor is now 170 to 695 g CO2/kWh around a 435 global average,
+all 2025 values (IEA, low confidence).
 Events already carry `inferenceGeo` where Claude logs record it. A provider's
-published regions, plus open country data (Ember; licence and figures
-not yet read here), could replace the global range with the range across the
+published regions, plus open country data (Ember, released under CC BY 4.0,
+confirmed on its site on 22 October), could replace the global range with the range across the
 regions each provider actually serves from. Market-based figures from
 provider sustainability reports should be shown separately, not used: the
 SCI for AI specification excludes RECs and PPAs from any reduction.
@@ -104,8 +135,11 @@ allocated over a three-year life by time share of the batch.
 from the EcoLogits method with ML.ENERGY throughput, and source a CO2 to CO2e
 uplift for grid electricity. Both EcoLogits (MPL-2.0) and the SCI for AI
 specification are hosted on github.com, which the derivation excluded as a
-research domain. The owner should rule whether a specification's canonical
-repository counts as a primary source.
+research domain. Recommended conditions if the owner admits them: allow
+named repositories, not the github.com host, since anyone can publish there
+and the evidence checker must not be pointable anywhere new; cite commit
+permalinks, not branches, so the hashed bytes cannot move; and pair each with
+its reviewed publication where one exists (EcoLogits has a JOSS paper).
 
 ### 3.4 Per-model scaling
 
@@ -125,7 +159,7 @@ size, or a measured per-model source appears.
 | Google full-system paper | arXiv | facility overhead, already cited | keep |
 | EcoLogits (GenAI Impact) | MPL-2.0 | embodied method; cross-check fixture | port method, not code |
 | GSF SCI for AI | MIT / CC BY 4.0 (repo statement) | boundary and functional unit | adopt as frame |
-| Ember | not yet confirmed | regional grid intensity | adopt if confirmed |
+| Ember | CC BY 4.0 (confirmed) | regional grid intensity; replaces IEA, which refuses automated checks | adopt |
 | CodeCarbon, Cloud Carbon Footprint | open | local or cloud-bill measurement | wrong boundary; skip |
 
 No runtime dependency is proposed. Other tools' figures enter only as test
@@ -140,13 +174,15 @@ fixtures or as sourced registry entries.
 
 ## 6. Owner rulings needed
 
-1. Whether to allow network access here for the overdue hosts, or run the
-   re-review on the workstation.
-2. Whether github.com may host primary sources for specifications and methods
-   (SCI for AI, EcoLogits).
+1. Add `eta-publications.lbl.gov`, `www.iea.org` and `www.ecb.europa.eu`
+   to this environment's allowlist, or re-review those three on the
+   workstation. The gates stay red until then.
+2. Whether named GitHub repositories, pinned to commits, may serve as primary
+   sources for specifications and methods (SCI for AI, EcoLogits).
 3. Which cached-input route to pursue: ML.ENERGY data, a first-principles
    bound, or disclosure only.
-4. Whether to add Ember to the evidence allowlist.
+4. Whether to add Ember to the evidence allowlist and derive a regional
+   carbon range from it.
 
 ## 7. Six design-time controls
 

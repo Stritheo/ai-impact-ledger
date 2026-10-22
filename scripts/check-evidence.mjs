@@ -20,6 +20,20 @@ const ALLOWED_HOSTS = Object.freeze({
   'www.ecb.europa.eu': {mode: 'structure', markers: ['reference rates']}
 });
 
+// Anyone can publish on GitHub, so the host alone confers no authority. Only
+// these repositories are admitted, and only at a full commit hash: a branch
+// can move after review, a commit cannot.
+const PINNED_REPOSITORIES = Object.freeze(['genai-impact/ecologits', 'Green-Software-Foundation/sci-ai']);
+const PINNED_PATH = /^\/([^/]+\/[^/]+)\/([0-9a-f]{40})\/[^?#]+$/;
+
+function pinnedRepositoryRule(url) {
+  const match = PINNED_PATH.exec(url.pathname);
+  if (!match || !PINNED_REPOSITORIES.includes(match[1]) || url.search || url.hash) {
+    throw new Error(`source must be a named repository at a pinned commit, outside the fixed allowlist: ${url.href}`);
+  }
+  return {mode: 'binary'};
+}
+
 // Two sources share a host, so their structure markers are keyed by entry.
 const MARKERS_BY_ID = Object.freeze({
   'google-full-system-2026-09-17': ['Measuring the environmental impact'],
@@ -31,8 +45,9 @@ export function sourcesFrom(registry, fxRegistry) {
     ['fx-reference-rates', fxRegistry.source, fxRegistry]];
   const seen = new Map();
   for (const [id, url, entry] of entries) {
-    const host = new URL(url).hostname;
-    const rule = ALLOWED_HOSTS[host];
+    const parsed = new URL(url);
+    const host = parsed.hostname;
+    const rule = host === 'raw.githubusercontent.com' ? pinnedRepositoryRule(parsed) : ALLOWED_HOSTS[host];
     if (!rule) throw new Error(`source host is outside the fixed allowlist: ${host}`);
     if (seen.has(url)) continue;
     seen.set(url, {id, url, checkUrl: rule.checkPath ? new URL(rule.checkPath, url).toString() : url,
