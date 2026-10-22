@@ -105,3 +105,28 @@ test('the extension flags a long-context Codex call as it is recorded', async ()
   assert.doesNotMatch(status.text, /No reference price/);
   assert.match(status.tooltip, /some calls lack a defensible reference cost/);
 });
+
+function claudeCall(model, input, cachedInput = 0) {
+  return {id: `${model}-${input}`, provider: 'anthropic', model, timestamp: '2026-10-22T03:00:00.000Z',
+    tokens: {input: input - cachedInput, cachedInput, cacheWrite: 0, cacheWrite5m: 0, cacheWrite1h: 0, output: 1000}, inferenceGeo: null};
+}
+
+// Reviewed 22 October 2026 against platform.claude.com/docs/en/about-claude/pricing.
+// Opus 5.5 and Sonnet 5.5 read cache at 0.05x input; Haiku 5.5 is the only
+// Claude model priced by prompt length, at 100,000 tokens including cache reads.
+test('the registry carries the Claude 5.5 prices Anthropic states', () => {
+  const byId = Object.fromEntries(registry.models.map((model) => [model.id, model]));
+  assert.deepEqual(byId['claude-opus-5-5'].priceUsdPerMillion, {input: 4, cachedInput: 0.2, cacheWrite: 5, cacheWrite1h: 8, output: 20});
+  assert.deepEqual(byId['claude-sonnet-5-5'].priceUsdPerMillion, {input: 2, cachedInput: 0.1, cacheWrite: 2.5, cacheWrite1h: 4, output: 10});
+  assert.deepEqual(byId['claude-haiku-5-5'].priceUsdPerMillion, {input: 0.1, cachedInput: 0.01, cacheWrite: 0.125, cacheWrite1h: 0.2, output: 0.5});
+  assert.equal(byId['claude-haiku-5-5'].standardPriceMaxInputTokens, 100000);
+  assert.equal(byId['claude-opus-5-5'].standardPriceMaxInputTokens, undefined, 'Opus 5.5 has a flat 1M window');
+});
+
+test('a Haiku 5.5 prompt above 100,000 tokens is left unpriced, not priced at the lower tier', () => {
+  const atLimit = claudeCall('claude-haiku-5-5', 100000, 90000);
+  const overLimit = claudeCall('claude-haiku-5-5', 100001, 90000);
+  assert.ok(estimateEvent(atLimit, registry).cost.central > 0);
+  assert.equal(estimateEvent(overLimit, registry).cost.reason, 'non-standard-tier');
+  assert.ok(estimateEvent(claudeCall('claude-opus-5-5', 900000, 890000), registry).cost.central > 0);
+});

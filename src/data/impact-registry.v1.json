@@ -87,8 +87,8 @@
       "derivation": "Model-specific input, cache-read, five-minute cache-write, one-hour cache-write and output prices transcribed from the reviewed source page.",
       "confidence": "high",
       "licence": "factual-reference-only; no source content redistributed",
-      "reviewedAt": "2026-09-15",
-      "nextReviewDue": "2026-10-15"
+      "reviewedAt": "2026-10-22",
+      "nextReviewDue": "2026-11-22"
     },
     "openai-astra-pricing-2026-09-15": {
       "sourceUrl": "https://developers.openai.com/api/docs/models/gpt-6-astra",
@@ -175,6 +175,9 @@
   "models": [
     {"id": "claude-fable-5", "aliases": ["claude-fable-5", "fable"], "provider": "anthropic", "energyMultiplier": 1, "priceUsdPerMillion": {"input": 10, "cachedInput": 1, "cacheWrite": 12.5, "cacheWrite1h": 20, "output": 50}, "priceEvidenceRef": "anthropic-pricing-2026-09-15", "source": "https://platform.claude.com/docs/en/about-claude/pricing"},
     {"id": "claude-fable-5-1", "aliases": [], "provider": "anthropic", "energyMultiplier": 1, "priceUsdPerMillion": {"input": 10, "cachedInput": 0.25, "cacheWrite": 12.5, "cacheWrite1h": 20, "output": 50}, "priceEvidenceRef": "anthropic-pricing-2026-09-15", "source": "https://platform.claude.com/docs/en/about-claude/pricing"},
+    {"id": "claude-opus-5-5", "aliases": [], "provider": "anthropic", "energyMultiplier": 1, "priceUsdPerMillion": {"input": 4, "cachedInput": 0.2, "cacheWrite": 5, "cacheWrite1h": 8, "output": 20}, "priceEvidenceRef": "anthropic-pricing-2026-09-15", "source": "https://platform.claude.com/docs/en/about-claude/pricing"},
+    {"id": "claude-sonnet-5-5", "aliases": [], "provider": "anthropic", "energyMultiplier": 1, "priceUsdPerMillion": {"input": 2, "cachedInput": 0.1, "cacheWrite": 2.5, "cacheWrite1h": 4, "output": 10}, "priceEvidenceRef": "anthropic-pricing-2026-09-15", "source": "https://platform.claude.com/docs/en/about-claude/pricing"},
+    {"id": "claude-haiku-5-5", "aliases": [], "provider": "anthropic", "energyMultiplier": 1, "priceUsdPerMillion": {"input": 0.1, "cachedInput": 0.01, "cacheWrite": 0.125, "cacheWrite1h": 0.2, "output": 0.5}, "standardPriceMaxInputTokens": 100000, "priceEvidenceRef": "anthropic-pricing-2026-09-15", "source": "https://platform.claude.com/docs/en/about-claude/pricing"},
     {"id": "claude-opus-5", "aliases": ["claude-opus-5", "opus"], "provider": "anthropic", "energyMultiplier": 1, "priceUsdPerMillion": {"input": 5, "cachedInput": 0.5, "cacheWrite": 6.25, "cacheWrite1h": 10, "output": 25}, "priceEvidenceRef": "anthropic-pricing-2026-09-15", "source": "https://platform.claude.com/docs/en/about-claude/pricing"},
     {"id": "claude-opus-4-8", "aliases": [], "provider": "anthropic", "energyMultiplier": 1, "priceUsdPerMillion": {"input": 5, "cachedInput": 0.5, "cacheWrite": 6.25, "cacheWrite1h": 10, "output": 25}, "priceEvidenceRef": "anthropic-pricing-2026-09-15", "source": "https://platform.claude.com/docs/en/about-claude/pricing"},
     {"id": "claude-sonnet-5", "aliases": ["claude-sonnet-5", "sonnet"], "provider": "anthropic", "energyMultiplier": 1, "priceUsdPerMillion": {"input": 2, "cachedInput": 0.2, "cacheWrite": 2.5, "cacheWrite1h": 4, "output": 10}, "priceEvidenceRef": "anthropic-pricing-2026-09-15", "source": "https://platform.claude.com/docs/en/about-claude/pricing"},
