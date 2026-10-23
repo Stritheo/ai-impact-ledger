@@ -262,13 +262,19 @@ test('summarising a large ledger does not block for seconds', () => {
   const now = new Date('2026-09-16T00:00:00Z');
   const events = manyEvents(16_000, now);
 
-  const started = performance.now();
-  buildSummary(events, registry, 'unknown', {period: '90d', now, timeZone: 'Australia/Sydney'});
-  const elapsed = performance.now() - started;
+  // The fastest of three runs is the code's own cost; slower runs measure
+  // contention from concurrent test files, which once pushed a single run past
+  // the limit. A regression slows every run, so the minimum still catches it.
+  let elapsed = Infinity;
+  for (let run = 0; run < 3; run++) {
+    const started = performance.now();
+    buildSummary(events, registry, 'unknown', {period: '90d', now, timeZone: 'Australia/Sydney'});
+    elapsed = Math.min(elapsed, performance.now() - started);
+  }
 
   // Measured at 64-105 ms in isolation, against 688 ms before this change. The
   // guard is loose because concurrent test files share the machine.
-  assert.ok(elapsed < 400, `summary took ${elapsed.toFixed(0)} ms`);
+  assert.ok(elapsed < 400, `fastest summary took ${elapsed.toFixed(0)} ms`);
 });
 
 // The Codex rollout format is implementation detail with no published contract.
