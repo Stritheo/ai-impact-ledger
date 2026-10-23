@@ -1,7 +1,8 @@
 # Plan: estimate accuracy before offsetting
 
-Date: 22 October 2026. Status: **draft for the owner's ruling.** Research
-phase only; no feature code. Gates part-restored (section 2).
+Date: 22 October 2026. Status: **rulings recorded 23 October 2026
+(section 6).** Research phase only; no feature code. Gates restored
+(section 2).
 
 ## 1. Why now
 
@@ -172,17 +173,23 @@ fixtures or as sourced registry entries.
 - Under SCI for AI, offsets do not reduce a footprint. Report gross emissions
   and offsets as separate lines.
 
-## 6. Owner rulings needed
+## 6. Owner rulings
 
-1. Add `eta-publications.lbl.gov`, `www.iea.org` and `www.ecb.europa.eu`
-   to this environment's allowlist, or re-review those three on the
-   workstation. The gates stay red until then.
-2. Whether named GitHub repositories, pinned to commits, may serve as primary
-   sources for specifications and methods (SCI for AI, EcoLogits).
-3. Which cached-input route to pursue: ML.ENERGY data, a first-principles
-   bound, or disclosure only.
-4. Whether to add Ember to the evidence allowlist and derive a regional
-   carbon range from it.
+Ruled by the owner on 22 and 23 October 2026:
+
+1. **Overdue sources:** the environment's allowlist was widened and every
+   source re-reviewed here (section 2). Done.
+2. **GitHub sources:** approved, on the conditions in section 3.3: named
+   repositories only, at pinned commits, paired with a reviewed publication
+   where one exists. Implemented in the evidence checker.
+3. **Cached input:** route (a), mine ML.ENERGY's long-prompt data for a
+   measured figure. Next research item.
+4. **Ember:** approved for the evidence allowlist, to derive a regional
+   carbon range (section 3.2), subject to its boundary meeting the
+   registry's CO2-only rule.
+5. **Offset feature:** to be built as a separate, private companion
+   extension that reads this ledger's figures, so this extension stays
+   network-free. Questions to TEM and for legal advice go out from the owner.
 
 ## 7. Six design-time controls
 
