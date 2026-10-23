@@ -5,10 +5,23 @@ public release; earlier versions were private.
 
 Dates are ISO 8601. Versions follow semantic versioning.
 
-## Unreleased
+## 0.3.0 — unreleased
 
 ### Added
 
+- Energy, water and carbon are shown as derived ranges with no single figure,
+  each stating its confidence, its evidence date and what it excludes. Where
+  one number is unavoidable, for the everyday comparison and the provider
+  share, the midpoint is used and labelled as such.
+- Everyday comparisons are sourced: hours of television and 250 mL glasses of
+  water. The unsourced e-bike comparison was withdrawn and is tracked in
+  issue #18.
+- A monthly evidence check that detects when a published source has changed.
+- `npm run verify:counting`, which reconciles what the ledger counts against
+  the totals the providers state in their own logs.
+- Command "AI Impact Ledger: Rebuild From Logs", which recomputes the daily
+  totals from the local logs after a confirmation stating what is replaced.
+  Detailed records deleted by a purge are not restored.
 - `npm run export:usage`, a read-only command that writes JSON totals of
   tokens and API-price cost for the rolling 5 hours, today, the last seven
   days and the month to date, by provider and by project. A project is a
@@ -32,31 +45,6 @@ Dates are ISO 8601. Versions follow semantic versioning.
 
 ### Fixed
 
-- The low bound of the carbon range was the IEA's 2030 forecast for the EU
-  (90 g CO2/kWh), not a 2025 value. It is now the EU's 2025 figure, 170, so
-  every bound matches the 2025 global average of 435. Low carbon estimates
-  rise by a factor of 1.89; central and high estimates are unchanged.
-
-## 0.3.0 — unreleased
-
-### Added
-
-- Energy, water and carbon are shown as derived ranges with no single figure,
-  each stating its confidence, its evidence date and what it excludes. Where
-  one number is unavoidable, for the everyday comparison and the provider
-  share, the midpoint is used and labelled as such.
-- Everyday comparisons are sourced: hours of television and 250 mL glasses of
-  water. The unsourced e-bike comparison was withdrawn and is tracked in
-  issue #18.
-- A monthly evidence check that detects when a published source has changed.
-- `npm run verify:counting`, which reconciles what the ledger counts against
-  the totals the providers state in their own logs.
-- Command "AI Impact Ledger: Rebuild From Logs", which recomputes the daily
-  totals from the local logs after a confirmation stating what is replaced.
-  Detailed records deleted by a purge are not restored.
-
-### Fixed
-
 - Counting pauses, and says so in the status bar and the report, when an older
   version of the extension is found writing to the same records from another
   VS Code window. Installing a new version does not replace the code already
@@ -77,6 +65,10 @@ Dates are ISO 8601. Versions follow semantic versioning.
 - Long-context and non-standard-tier calls are no longer priced at standard
   rates; calls that cannot be priced defensibly are left unpriced and
   disclosed rather than guessed.
+- The low bound of the carbon range was the IEA's 2030 forecast for the EU
+  (90 g CO2/kWh), not a 2025 value. It is now the EU's 2025 figure, 170, so
+  every bound matches the 2025 global average of 435. Low carbon estimates
+  rise by a factor of 1.89; central and high estimates are unchanged.
 
 ### Known limitations
 
