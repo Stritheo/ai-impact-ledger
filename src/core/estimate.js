@@ -23,6 +23,17 @@ function pricedAtStandardRates(event, registry, options = {}) {
   return !(Number.isSafeInteger(limit) && prompt > limit);
 }
 
+// Each output token attends over the whole prompt, cached or not, so the
+// extra decode energy scales with output x prompt length. It is measured only
+// between the baseline and maximum prompt lengths: below the baseline it is
+// already inside the output figure, and above the maximum it would be
+// extrapolation, so neither is counted.
+function contextReadUnits(tokens, registry) {
+  const {baselineContextTokens, maxContextTokens} = registry.energy.contextReading;
+  const prompt = (tokens.input || 0) + (tokens.cachedInput || 0) + (tokens.cacheWrite || 0);
+  return (tokens.output || 0) * Math.max(0, Math.min(prompt, maxContextTokens) - baselineContextTokens);
+}
+
 function round(value, digits = 6) {
   return Math.round(value * 10 ** digits) / 10 ** digits;
 }
@@ -41,6 +52,12 @@ function estimateEvent(event, registry, locationContext = 'unknown', options = {
     lowWh += thousands * perThousand.low * multiplier;
     highWh += thousands * perThousand.high * multiplier;
   }
+  // A daily total cannot rebuild each call's prompt from summed tokens, so it
+  // carries its calls' context pairs; a total recorded before it did adds none.
+  const pairs = options.aggregate === true ? (event.tokens.contextReadUnits || 0) : contextReadUnits(event.tokens, registry);
+  const reading = registry.energy.contextReading.whPerMillionOutputContextTokens;
+  lowWh += pairs / 1_000_000 * reading.low * multiplier;
+  highWh += pairs / 1_000_000 * reading.high * multiplier;
   const midWh = (lowWh + highWh) / 2;
 
   let cost = null;
@@ -149,4 +166,4 @@ function formatAnalogy(estimate, registry) {
   return `At the midpoint of the range, operational energy is roughly ${significant(hours)} hours of television at ${significant(watts)} watts, and on-site cooling water is roughly ${significant(glasses)} glasses of ${significant(glassMillilitres)} mL.`;
 }
 
-module.exports = { estimateEvent, addEstimates, formatAnalogy, pricedAtStandardRates };
+module.exports = { estimateEvent, addEstimates, formatAnalogy, pricedAtStandardRates, contextReadUnits };

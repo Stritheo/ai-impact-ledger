@@ -56,7 +56,8 @@ function sanitiseDaily(value) {
       ...(record.cacheWriteUnclassified !== undefined ? {cacheWriteUnclassified: safeInteger(record.cacheWriteUnclassified)} : {}),
       ...(record.preCorrection === true ? {preCorrection: true} : {}),
       output: safeInteger(record.output),
-      reasoningOutput: safeInteger(record.reasoningOutput)
+      reasoningOutput: safeInteger(record.reasoningOutput),
+      ...(record.contextReadUnits !== undefined ? {contextReadUnits: safeInteger(record.contextReadUnits)} : {})
     };
   }
   return result;
@@ -170,7 +171,7 @@ function validV2State(value) {
         || (row.nonStandardTier !== undefined && row.nonStandardTier !== true)
         || key !== dailyKey(row.date, row.provider, row.model, row.nonStandardTier)) return false;
     if (['calls', 'input', 'cachedInput', 'cacheWrite', 'output', 'reasoningOutput'].some((field) => safeInteger(row[field]) !== row[field])) return false;
-    if (['cacheWrite5m', 'cacheWrite1h', 'cacheWriteUnclassified'].some((field) => row[field] !== undefined && safeInteger(row[field]) !== row[field])) return false;
+    if (['cacheWrite5m', 'cacheWrite1h', 'cacheWriteUnclassified', 'contextReadUnits'].some((field) => row[field] !== undefined && safeInteger(row[field]) !== row[field])) return false;
     if (row.preCorrection !== undefined && row.preCorrection !== true) return false;
   }
   for (const [provider, records] of Object.entries(value.checkpoints)) {

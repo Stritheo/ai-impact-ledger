@@ -53,9 +53,10 @@ credentials, usernames or raw log lines.
   source measures Claude or Codex electricity, so the ranges are derived from
   measurements of comparable open models, scaled to whole-facility electricity.
   The working is in [the energy derivation](docs/evidence/energy-derivation.md).
-- **The ranges exclude the energy of re-reading cached context**, which is most
-  of the tokens recorded here and which no reviewed source measures. The report
-  says so wherever the figures appear.
+- **Reading context is counted only up to 4,096 tokens per call**, the longest
+  any reviewed source measures. Context beyond that is most of the tokens
+  recorded here, so the ranges are not an upper bound. The report says so
+  wherever the figures appear.
 - Where one number is unavoidable, for the everyday comparison and the Claude
   and Codex share, the midpoint is used and labelled.
 

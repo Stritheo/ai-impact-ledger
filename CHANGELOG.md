@@ -19,6 +19,13 @@ Dates are ISO 8601. Versions follow semantic versioning.
 
 ### Changed
 
+- Energy now counts the cost of reading each call's prompt context while
+  generating output, from 512 to 4,096 prompt tokens: the span the ML.ENERGY
+  Benchmark measures. Ranges rise accordingly. Context beyond 4,096 tokens,
+  most of the tokens in agentic sessions, is still excluded rather than
+  extrapolated, so the ranges are not an upper bound. Daily totals recorded
+  before this change exclude context reading; Rebuild From Logs restores it
+  where the logs remain.
 - Evidence re-reviewed on 22 October 2026. Every existing price and energy
   figure was unchanged except one correction below. Display exchange rates
   updated to the ECB reference rates of 22 October 2026.

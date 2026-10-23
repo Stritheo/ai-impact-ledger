@@ -71,6 +71,19 @@ for (const tokenClass of ['input', 'cachedInput', 'cacheWrite', 'output']) {
     failures.push(`registry: energy range for ${tokenClass} is zero without recording that its upper bound is not established`);
   }
 }
+// Context reading is measured over a stated span of prompt lengths; a range
+// without that span, or without its source, would invite extrapolation.
+const reading = registry.energy?.contextReading;
+const readingRange = reading?.whPerMillionOutputContextTokens;
+if (!reading || !readingRange || !Number.isFinite(readingRange.low) || !Number.isFinite(readingRange.high)
+    || readingRange.low < 0 || readingRange.high < readingRange.low) {
+  failures.push('registry: energy context reading range is missing or invalid');
+} else if (!Number.isSafeInteger(reading.baselineContextTokens) || !Number.isSafeInteger(reading.maxContextTokens)
+    || reading.baselineContextTokens < 0 || reading.maxContextTokens <= reading.baselineContextTokens) {
+  failures.push('registry: energy context reading span is missing or invalid');
+} else {
+  validateEvidence(reading.evidenceRef, 'energy context reading');
+}
 const pue = registry.energy?.overhead?.pue;
 if (!pue || !Number.isFinite(pue.low) || !Number.isFinite(pue.high) || pue.low < 1 || pue.high < pue.low) {
   failures.push('registry: facility overhead range is missing or invalid');

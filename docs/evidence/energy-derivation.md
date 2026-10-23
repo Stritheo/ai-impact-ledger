@@ -188,6 +188,9 @@ value × 1.71, high uses the high source value × 2.20.
     Claude Code sessions would be extrapolation far beyond the data.
 - **Conclusion:** lower bound **0**; upper bound **not established**.
 - **Confidence:** none for a number. The current 0.015 has no source.
+- **Superseded on 23 October 2026 by section 11**, which counts the cost of
+  attending over context from 512 to 4,096 prompt tokens per call. A cached
+  token still carries no energy of its own.
 
 ## 6. What this does not cover
 
@@ -319,3 +322,61 @@ of the arithmetic in sections 4 and 5. The following were corrected:
   removed; the hash basis is stated.
 
 Findings raised and not acted on: none.
+
+## 11. Context reading, 23 October 2026
+
+Owner's ruling of 23 October 2026, route a1 of
+`docs/plans/2026-10-22-estimate-accuracy.md`.
+
+### Correction to section 5
+
+Section 5 said the S1 Table 4 columns differ in both input and output length
+distributions, so the rise in decode energy mixed the two. That holds for the
+middle column only. The first and third columns share an output mean of 512
+and differ only in input mean (512 against 4,096), so comparing them isolates
+the decode cost of a longer context.
+
+### Figures (S1, Table 4, page 25; GPU energy)
+
+Decode energy per output token is energy per generation × decode share ÷ 512:
+
+| Deployment | Input mean 512 | Input mean 4,096 | Rise per prompt token |
+|---|---:|---:|---:|
+| Llama 3.1 8B, 1P3D | 37.71 × 0.772 ÷ 512 = 0.0569 J | 208.34 × 0.672 ÷ 512 = 0.2734 J | 6.04 × 10⁻⁵ J |
+| Llama 3.1 8B, 2P2D | 36.22 × 0.767 ÷ 512 = 0.0543 J | 151.75 × 0.552 ÷ 512 = 0.1636 J | 3.05 × 10⁻⁵ J |
+| Llama 3.1 8B, 3P1D | 37.26 × 0.770 ÷ 512 = 0.0560 J | 158.85 × 0.560 ÷ 512 = 0.1737 J | 3.28 × 10⁻⁵ J |
+| Llama 3.1 70B, 1P1D | 276.93 × 0.648 ÷ 512 = 0.3505 J | 1,492.59 × 0.500 ÷ 512 = 1.4576 J | 3.09 × 10⁻⁴ J |
+
+The rise is (third column − first) ÷ (4,096 − 512), in joules per output token
+per prompt token. The prompt lengths are means of a Pareto distribution, so
+individual prompts in the third column run longer than 4,096.
+
+### Coefficient
+
+- **Low:** the lowest rise, 3.05 × 10⁻⁵ J, × 1.71 (section 4) = 5.22 × 10⁻⁵ J
+  of facility energy, or **0.0145 Wh per million pairs** of output token and
+  prompt token.
+- **High:** the highest rise, 3.09 × 10⁻⁴ J, × 2.20 = 6.80 × 10⁻⁴ J, or
+  **0.189 Wh per million pairs**.
+- **Applied:** to each call, output tokens × (min(prompt, 4,096) − 512), where
+  the prompt is fresh input, cached input and cache writes together, since
+  every output token attends over all of them. Below 512 the cost is already
+  inside the output range, which was measured on short chat prompts. Above
+  4,096 nothing is counted, because no reviewed source measures it and a
+  straight-line extension to the 100,000-token contexts of agentic sessions
+  would run 25 or more times past the data.
+- **Daily totals** carry the sum of each call's pairs, because the cap cannot
+  be applied to summed tokens. Totals recorded before this change carry none
+  and add nothing, which the report states.
+- **Confidence:** low. Two dense models on one hardware generation; the 8B
+  rise varies twofold with deployment; production models' attention design is
+  not published, and designs that compress the cache would sit lower.
+
+### Effect
+
+On 33 calls recorded in one cloud session, 1 to 22 October 2026, energy moves
+from 13.8 to 47.2 Wh to about 15.0 to 63.6 Wh: 24,203 output tokens, every call's
+prompt above 4,096 tokens (the smallest recorded was 78,858), so 86.7 million
+pairs at 0.0145 and 0.189 Wh per
+million. Context beyond 4,096 tokens, 96.8 per cent of those tokens, remains
+excluded, so the range is still not an upper bound.

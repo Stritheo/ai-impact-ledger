@@ -182,8 +182,10 @@ Ruled by the owner on 22 and 23 October 2026:
 2. **GitHub sources:** approved, on the conditions in section 3.3: named
    repositories only, at pinned commits, paired with a reviewed publication
    where one exists. Implemented in the evidence checker.
-3. **Cached input:** route (a), mine ML.ENERGY's long-prompt data for a
-   measured figure. Next research item.
+3. **Cached input:** route (a), then option a1 on 23 October 2026: count
+   context reading from 512 to 4,096 prompt tokens per call, from S1
+   Table 4, and no further. Implemented; working in
+   `docs/evidence/energy-derivation.md`, section 11.
 4. **Ember:** approved for the evidence allowlist, to derive a regional
    carbon range (section 3.2), subject to its boundary meeting the
    registry's CO2-only rule.

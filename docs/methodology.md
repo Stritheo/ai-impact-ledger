@@ -26,9 +26,11 @@ FX registry. It is not a transaction rate and no live currency request is made.
 Energy is a range, not a single figure. No published source measures Claude or
 Codex electricity, so per-token ranges are derived from measurements of
 comparable open models and scaled to whole-facility electricity; the working is
-in `docs/evidence/energy-derivation.md`. The range excludes the energy of
-re-reading cached context, which no reviewed source measures and which accounts
-for most recorded tokens. Where a single number is unavoidable, for the
+in `docs/evidence/energy-derivation.md`. Reading a call's prompt context while
+generating output is counted from 512 to 4,096 prompt tokens, the span the
+ML.ENERGY Benchmark measures. Context beyond 4,096 tokens, which accounts for
+most recorded tokens, is excluded rather than extrapolated, so the range is
+not an upper bound. Where a single number is unavoidable, for the
 everyday comparison and the Claude and Codex share, the midpoint is used and
 labelled.
 
