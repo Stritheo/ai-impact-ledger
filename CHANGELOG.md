@@ -15,7 +15,7 @@ Dates are ISO 8601. Versions follow semantic versioning.
   share, the midpoint is used and labelled as such.
 - Everyday comparisons are sourced: hours of television and 250 mL glasses of
   water. The unsourced e-bike comparison was withdrawn and is tracked in
-  issue #18.
+  [issue #1](https://github.com/Stritheo/ai-impact-ledger/issues/1).
 - A monthly evidence check that detects when a published source has changed.
 - `npm run verify:counting`, which reconciles what the ledger counts against
   the totals the providers state in their own logs.
@@ -73,6 +73,6 @@ Dates are ISO 8601. Versions follow semantic versioning.
 ### Known limitations
 
 - Calls older than the retention window never reach the daily totals
-  (issue #19).
+  ([issue #2](https://github.com/Stritheo/ai-impact-ledger/issues/2)).
 - A day at the edge of a period can include work from the neighbouring local
-  day, because totals carry UTC dates while periods are local (issue #20).
+  day, because totals carry UTC dates while periods are local ([issue #3](https://github.com/Stritheo/ai-impact-ledger/issues/3)).
