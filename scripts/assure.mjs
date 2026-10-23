@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import {spawnSync} from 'node:child_process';
+import {assuranceSummary} from './assurance-summary.mjs';
 
 function run(command, args) {
   const result = spawnSync(command, args, {encoding: 'utf8'});
@@ -65,3 +66,6 @@ const report = {
 fs.mkdirSync('build', {recursive: true});
 fs.writeFileSync('build/assurance-report.json', `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify(report, null, 2));
+if (process.env.GITHUB_STEP_SUMMARY) {
+  fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${assuranceSummary(report, packagePath.slice('build/'.length))}\n`);
+}
