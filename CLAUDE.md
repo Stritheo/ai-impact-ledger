@@ -3,6 +3,23 @@
 A local-first VS Code extension that estimates the cost and environmental
 impact of AI coding work. Nothing it records leaves the machine.
 
+## Start here (new sessions)
+
+Context lives in the repository, not in past chats. Before planning anything:
+
+1. **Open issues labelled `beta`**, then `backlog`. Each issue's body states its
+   order and what done means. One issue, one branch, one pull request, with
+   "Closes #n".
+2. **`docs/decisions.md`**: the owner's rulings, newest first. Don't reopen a
+   ruling without a reason; record each new one there in the same pull request.
+3. **The latest plan in `docs/plans/`** and the working behind every figure in
+   `docs/evidence/energy-derivation.md`.
+4. **Before stopping**, update the issue or plan with where the work stands.
+   Nothing that matters may live only in chat.
+
+Commercial context (partners, pricing, legal questions) is deliberately kept
+out of this public repository. Ask the owner for it.
+
 ## Commands
 
 - `npm test` — the full unit suite (`node --test`).
