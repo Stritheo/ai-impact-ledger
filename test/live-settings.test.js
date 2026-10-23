@@ -169,7 +169,7 @@ test('an open report follows a refresh, and a closed one is left alone', async (
 test('a refresh with nothing new keeps the full status bar tooltip', async () => {
   await withExtension({}, async ({status, commands}) => {
     const full = status.tooltip;
-    assert.match(full, /excluding the energy of re-reading cached context/);
+    assert.match(full, /excluding the energy of reading context beyond 4,096 tokens per call/);
     // The second refresh finds no new data and takes the unchanged-data
     // shortcut, which must not shorten what the tooltip discloses.
     await commands.get('aiImpactLedger.refresh')();

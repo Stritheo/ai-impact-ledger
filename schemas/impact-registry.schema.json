@@ -39,13 +39,25 @@
     "evidence": {"type": "object", "additionalProperties": {"$ref": "#/$defs/evidence"}},
     "energy": {
       "type": "object",
-      "required": ["whPerThousandTokens", "overhead", "excludes", "evidenceRef", "overheadEvidenceRef", "derivation", "source", "confidence"],
+      "required": ["whPerThousandTokens", "contextReading", "overhead", "excludes", "evidenceRef", "overheadEvidenceRef", "derivation", "source", "confidence"],
       "properties": {
         "whPerThousandTokens": {
           "type": "object",
           "required": ["input", "cachedInput", "cacheWrite", "output"],
           "additionalProperties": {"$ref": "#/$defs/range"},
           "description": "Derived low and high whole-facility energy per 1,000 tokens. No central value: no reviewed source supports one."
+        },
+        "contextReading": {
+          "type": "object",
+          "required": ["whPerMillionOutputContextTokens", "baselineContextTokens", "maxContextTokens", "evidenceRef", "note"],
+          "properties": {
+            "whPerMillionOutputContextTokens": {"$ref": "#/$defs/range"},
+            "baselineContextTokens": {"type": "integer", "minimum": 0},
+            "maxContextTokens": {"type": "integer", "minimum": 1},
+            "evidenceRef": {"type": "string"},
+            "note": {"type": "string", "minLength": 1}
+          },
+          "description": "Derived low and high whole-facility energy of attending over prompt context, per million pairs of output token and prompt token, counted only between the baseline and maximum prompt lengths. Not extrapolated beyond the measured span."
         },
         "overhead": {"type": "object", "required": ["pue"], "properties": {"pue": {"$ref": "#/$defs/range"}}},
         "excludes": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}

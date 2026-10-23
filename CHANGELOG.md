@@ -5,31 +5,6 @@ public release; earlier versions were private.
 
 Dates are ISO 8601. Versions follow semantic versioning.
 
-## Unreleased
-
-### Added
-
-- `npm run export:usage`, a read-only command that writes JSON totals of
-  tokens and API-price cost for the rolling 5 hours, today, the last seven
-  days and the month to date, by provider and by project. A project is a
-  SHA-256 key of the folder a session started in; folders are never stored.
-- Reference prices for Claude Opus 5.5, Sonnet 5.5 and Haiku 5.5, and for
-  GPT-6.1 Sol and GPT-6 Luna. A Haiku 5.5 prompt over 100,000 tokens is left
-  unpriced and disclosed, as long-context Codex prompts already are.
-
-### Changed
-
-- Evidence re-reviewed on 22 October 2026. Every existing price and energy
-  figure was unchanged except one correction below. Display exchange rates
-  updated to the ECB reference rates of 22 October 2026.
-
-### Fixed
-
-- The low bound of the carbon range was the IEA's 2030 forecast for the EU
-  (90 g CO2/kWh), not a 2025 value. It is now the EU's 2025 figure, 170, so
-  every bound matches the 2025 global average of 435. Low carbon estimates
-  rise by a factor of 1.89; central and high estimates are unchanged.
-
 ## 0.3.0 — unreleased
 
 ### Added
@@ -47,6 +22,26 @@ Dates are ISO 8601. Versions follow semantic versioning.
 - Command "AI Impact Ledger: Rebuild From Logs", which recomputes the daily
   totals from the local logs after a confirmation stating what is replaced.
   Detailed records deleted by a purge are not restored.
+- `npm run export:usage`, a read-only command that writes JSON totals of
+  tokens and API-price cost for the rolling 5 hours, today, the last seven
+  days and the month to date, by provider and by project. A project is a
+  SHA-256 key of the folder a session started in; folders are never stored.
+- Reference prices for Claude Opus 5.5, Sonnet 5.5 and Haiku 5.5, and for
+  GPT-6.1 Sol and GPT-6 Luna. A Haiku 5.5 prompt over 100,000 tokens is left
+  unpriced and disclosed, as long-context Codex prompts already are.
+
+### Changed
+
+- Energy now counts the cost of reading each call's prompt context while
+  generating output, from 512 to 4,096 prompt tokens: the span the ML.ENERGY
+  Benchmark measures. Ranges rise accordingly. Context beyond 4,096 tokens,
+  most of the tokens in agentic sessions, is still excluded rather than
+  extrapolated, so the ranges are not an upper bound. Daily totals recorded
+  before this change exclude context reading; Rebuild From Logs restores it
+  where the logs remain.
+- Evidence re-reviewed on 22 October 2026. Every existing price and energy
+  figure was unchanged except one correction below. Display exchange rates
+  updated to the ECB reference rates of 22 October 2026.
 
 ### Fixed
 
@@ -70,6 +65,10 @@ Dates are ISO 8601. Versions follow semantic versioning.
 - Long-context and non-standard-tier calls are no longer priced at standard
   rates; calls that cannot be priced defensibly are left unpriced and
   disclosed rather than guessed.
+- The low bound of the carbon range was the IEA's 2030 forecast for the EU
+  (90 g CO2/kWh), not a 2025 value. It is now the EU's 2025 figure, 170, so
+  every bound matches the 2025 global average of 435. Low carbon estimates
+  rise by a factor of 1.89; central and high estimates are unchanged.
 
 ### Known limitations
 

@@ -1,5 +1,8 @@
 'use strict';
 
+const registry = require('../data/impact-registry.v1.json');
+const {contextReadUnits} = require('./estimate');
+
 function usageScore(event) {
   const tokens = event?.tokens || {};
   return (tokens.input || 0) + (tokens.cachedInput || 0) + (tokens.cacheWrite || 0) + (tokens.output || 0);
@@ -49,7 +52,7 @@ function afterTimestamp(events, timestamp) {
 }
 
 function emptyTotals() {
-  return {calls: 0, input: 0, cachedInput: 0, cacheWrite: 0, cacheWrite5m: 0, cacheWrite1h: 0, output: 0, reasoningOutput: 0};
+  return {calls: 0, input: 0, cachedInput: 0, cacheWrite: 0, cacheWrite5m: 0, cacheWrite1h: 0, output: 0, reasoningOutput: 0, contextReadUnits: 0};
 }
 
 const TOKEN_FIELDS = ['input', 'cachedInput', 'cacheWrite', 'cacheWrite5m', 'cacheWrite1h', 'output', 'reasoningOutput'];
@@ -65,6 +68,7 @@ function aggregateByDay(events) {
     for (const field of TOKEN_FIELDS) {
       total[field] += event.tokens[field] || 0;
     }
+    total.contextReadUnits += contextReadUnits(event.tokens, registry);
   }
   return days;
 }
@@ -86,6 +90,7 @@ function updateDaily(previousDaily, previousDetail, incoming) {
       for (const field of TOKEN_FIELDS) {
         total[field] = Math.max(0, total[field] + sign * (item.tokens[field] || 0));
       }
+      total.contextReadUnits = Math.max(0, (total.contextReadUnits || 0) + sign * contextReadUnits(item.tokens, registry));
       if (sign < 0) emptied.add(key);
     }
   }
@@ -160,7 +165,7 @@ function reconcileDailyFloor(previousDaily, retainedDetail) {
   const result = Object.fromEntries(Object.entries(previousDaily || {}).map(([key, value]) => [key, {...value}]));
   for (const [key, row] of Object.entries(aggregateByDay(retainedDetail))) {
     const current = result[key] ||= {...row};
-    for (const field of ['calls', ...TOKEN_FIELDS]) {
+    for (const field of ['calls', ...TOKEN_FIELDS, 'contextReadUnits']) {
       current[field] = Math.max(current[field] || 0, row[field]);
     }
   }

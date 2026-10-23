@@ -164,12 +164,13 @@
   "energy": {
     "whPerThousandTokens": {
       "input": {"low": 0.086, "high": 0.117, "evidenceRef": "mlenergy-benchmark-paper-2026-09-18"},
-      "cachedInput": {"low": 0, "high": 0, "upperBoundEstablished": false, "note": "no reviewed source measures the energy of re-reading cached context; the published range excludes it and is therefore not an upper bound on total energy"},
+      "cachedInput": {"low": 0, "high": 0, "upperBoundEstablished": false, "note": "a cache read skips prefill, so a cached token carries no energy of its own; attending over it while generating output is counted through contextReading up to 4,096 prompt tokens per call. Beyond that it is excluded, so the range is not an upper bound on total energy"},
       "cacheWrite": {"low": 0.086, "high": 0.117, "evidenceRef": "mlenergy-benchmark-paper-2026-09-18"},
       "output": {"low": 0.2, "high": 1.45, "evidenceRef": "mlenergy-token-classes-2026-09-17"}
     },
     "overhead": {"pue": {"low": 1.09, "high": 1.4}},
-    "excludes": ["the energy of re-reading cached context, which is not measured by any reviewed source"],
+    "contextReading": {"whPerMillionOutputContextTokens": {"low": 0.0145, "high": 0.189}, "baselineContextTokens": 512, "maxContextTokens": 4096, "evidenceRef": "mlenergy-benchmark-paper-2026-09-18", "note": "extra decode energy of attending over prompt context, per output token per prompt token, measured only between 512 and 4,096 prompt tokens; counted for that span of each call's prompt and not extrapolated beyond it"},
+    "excludes": ["the energy of reading prompt context beyond 4,096 tokens per call, which no reviewed source measures"],
     "unknownModelMultiplier": 1,
     "evidenceRef": "mlenergy-token-classes-2026-09-17",
     "overheadEvidenceRef": "google-full-system-2026-09-17",

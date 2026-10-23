@@ -38,3 +38,25 @@ test('the packaged artefact hash does not depend on the builder time zone', () =
   assert.equal(build('Australia/Sydney'), build('UTC'),
     'a release hash that changes with the builder time zone cannot be checked against CI');
 });
+
+// Owner's ruling of 23 October 2026: the hosted build's VSIX hash must be
+// readable on the run's summary page, so a release can be checked against a
+// clean local build without opening the job log.
+test('the hosted run summary states the VSIX hash and every gate', async () => {
+  const {assuranceSummary} = await import('../scripts/assurance-summary.mjs');
+  const report = {generatedAt: '2026-10-23T02:00:00.000Z', releaseDecision: 'local-gates-pass', gates: [
+    {gate: 'tests, syntax and security policy', result: 'pass', tests: 230},
+    {gate: 'reproducible valid VSIX', result: 'pass', sha256: 'a'.repeat(64)}]};
+  const summary = assuranceSummary(report, 'ai-impact-ledger-0.3.0.vsix');
+  assert.match(summary, new RegExp(`ai-impact-ledger-0\\.3\\.0\\.vsix.*${'a'.repeat(64)}`));
+  assert.match(summary, /\| tests, syntax and security policy \| pass \|/);
+  assert.match(summary, /\| reproducible valid VSIX \| pass \|/);
+  assert.match(summary, /local-gates-pass/);
+  assert.throws(() => assuranceSummary({...report, gates: [report.gates[0]]}, 'x.vsix'), /hash/);
+});
+
+test('the assurance run writes its summary to the hosted run page when one is provided', () => {
+  const assuranceScript = fs.readFileSync('scripts/assure.mjs', 'utf8');
+  assert.match(assuranceScript, /GITHUB_STEP_SUMMARY/);
+  assert.match(assuranceScript, /assuranceSummary\(report/);
+});
