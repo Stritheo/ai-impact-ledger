@@ -13,6 +13,22 @@ Dates are ISO 8601. Versions follow semantic versioning.
   tokens and API-price cost for the rolling 5 hours, today, the last seven
   days and the month to date, by provider and by project. A project is a
   SHA-256 key of the folder a session started in; folders are never stored.
+- Reference prices for Claude Opus 5.5, Sonnet 5.5 and Haiku 5.5, and for
+  GPT-6.1 Sol and GPT-6 Luna. A Haiku 5.5 prompt over 100,000 tokens is left
+  unpriced and disclosed, as long-context Codex prompts already are.
+
+### Changed
+
+- Evidence re-reviewed on 22 October 2026. Every existing price and energy
+  figure was unchanged except one correction below. Display exchange rates
+  updated to the ECB reference rates of 22 October 2026.
+
+### Fixed
+
+- The low bound of the carbon range was the IEA's 2030 forecast for the EU
+  (90 g CO2/kWh), not a 2025 value. It is now the EU's 2025 figure, 170, so
+  every bound matches the 2025 global average of 435. Low carbon estimates
+  rise by a factor of 1.89; central and high estimates are unchanged.
 
 ## 0.3.0 — unreleased
 

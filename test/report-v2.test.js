@@ -60,7 +60,7 @@ test('presentation settings fail safely and never change canonical USD or litres
   assert.equal(invalid.waterUnits, 'metric');
   assert.equal(invalid.period, 'today');
   const aud = normaliseSettings({currency: 'AUD', waterUnits: 'us', showAnalogy: false});
-  assert.equal(convertCost(1, aud.currency).value.toFixed(4), '1.3942');
+  assert.equal(convertCost(1, aud.currency).value.toFixed(4), '1.4261');
   assert.equal(convertWater(3.785411784, aud.waterUnits).value, 1);
   const uk = normaliseSettings({waterUnits: 'uk'});
   assert.equal(convertWater(4.54609, uk.waterUnits).value, 1);
@@ -72,7 +72,7 @@ test('report can hide analogy but cannot hide method and uncertainty', () => {
   const html = reportHtml(summary);
   assert.doesNotMatch(html, /In everyday terms/);
   assert.match(html, /API-equivalent/);
-  assert.match(html, /11 Sept? 2026/);
+  assert.match(html, /22 Oct 2026/);
   assert.match(html, /inference operations only/);
   assert.match(html, /Australia\/Sydney.*13 Sept? 2026/);
 });

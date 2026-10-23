@@ -1,20 +1,20 @@
 {
-  "capturedAt": "2026-09-18T07:49:44.204Z",
+  "capturedAt": "2026-10-22T22:39:21.444Z",
   "sources": {
     "mlenergy-benchmark-paper-2026-09-18": {
       "url": "https://arxiv.org/abs/2505.06371",
-      "sha256": "c0c0f835f71bec264c2cd901c3b04cd4a0bfbd254438fa5479ba0a765b083904",
-      "capturedAt": "2026-09-18T07:49:44.204Z"
+      "sha256": "b1ed8fe5f5770e3f8cffc9cc599bb6e82a5d382033287db76365b468d21c7ba1",
+      "capturedAt": "2026-10-22T22:39:21.444Z"
     },
     "mlenergy-token-classes-2026-09-17": {
       "url": "https://ml.energy/leaderboard/",
       "sha256": "b638d291fc6a0588afeb0deccbcf8fa94e197fadf557614e8b978932d5e1ac65",
-      "capturedAt": "2026-09-18T07:49:44.204Z"
+      "capturedAt": "2026-10-22T22:39:21.444Z"
     },
     "google-full-system-2026-09-17": {
       "url": "https://arxiv.org/abs/2508.15734",
-      "sha256": "fb41bd26fdb2ea1e7189286c7cc675118a034142d442ff02306f00faeb0f0c34",
-      "capturedAt": "2026-09-18T07:49:44.204Z"
+      "sha256": "0c14500fbfb404cc41fe0b670758c95fe7ff8a3a96a9bc2448219f1c1ba9d28e",
+      "capturedAt": "2026-10-22T22:39:21.444Z"
     },
     "lbnl-water-2024": {
       "url": "https://eta-publications.lbl.gov/sites/default/files/2024-12/us_data_center_energy_usage_report_lbnl-2001637_0.pdf",
@@ -23,23 +23,33 @@
     },
     "anthropic-pricing-2026-09-15": {
       "url": "https://platform.claude.com/docs/en/about-claude/pricing",
-      "sha256": "db549e61fcaf2f8c7629417f74a54766a23579b3d648c779f4bb30d03c51e56d",
-      "capturedAt": "2026-09-18T07:49:44.204Z"
+      "sha256": "d19f6c5012b1de251002793459a480f1b37f5509c39bf23d9f53bcd22a3b1871",
+      "capturedAt": "2026-10-22T22:39:21.444Z"
     },
     "openai-astra-pricing-2026-09-15": {
       "url": "https://developers.openai.com/api/docs/models/gpt-6-astra",
-      "sha256": "faec0ec8510aa5bbdb8c1846e976dc2cbb7dedeed73e29ab6344df3761715197",
-      "capturedAt": "2026-09-18T07:49:44.204Z"
+      "sha256": "32fd8488285b8e3e393331b91673a7fd88d86479648911f9ca509c1adde4e9c4",
+      "capturedAt": "2026-10-22T22:39:21.444Z"
     },
     "openai-sol-pricing-2026-09-15": {
       "url": "https://developers.openai.com/api/docs/models/gpt-5.6-sol",
-      "sha256": "65b7075425424745433af54929b5f4d3a042540979825063494cad3e3d78c039",
-      "capturedAt": "2026-09-18T07:49:44.204Z"
+      "sha256": "dbdb648fcc3205b2c68b3e71f4324bbc2dc59cab87b2433d64590f72eab9e2e4",
+      "capturedAt": "2026-10-22T22:39:21.444Z"
     },
     "openai-terra-pricing-2026-09-15": {
       "url": "https://developers.openai.com/api/docs/models/gpt-5.6-terra",
-      "sha256": "d045dc335ebc56c3017882374d8bc0cb4016aa6a5bcaaa213c429f2ec85d45c6",
-      "capturedAt": "2026-09-18T07:49:44.204Z"
+      "sha256": "0b76d79f99415e5ac7d5cbc874b6bcb84739a1a1d68fc04effb1e56fe0464580",
+      "capturedAt": "2026-10-22T22:39:21.444Z"
+    },
+    "openai-sol-6-1-pricing-2026-10-22": {
+      "url": "https://developers.openai.com/api/docs/models/gpt-6.1-sol",
+      "sha256": "a921a3885fdb6d4b31955af896ff65db306b04f3ab7fc6d51259f6040f6571a6",
+      "capturedAt": "2026-10-22T22:39:21.444Z"
+    },
+    "openai-luna-pricing-2026-10-22": {
+      "url": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+      "sha256": "da95ab739239ae7efec46e0525b80044e1dfb1fac1401c00f16e60dc3c594927",
+      "capturedAt": "2026-10-22T22:39:21.444Z"
     }
   }
 }
