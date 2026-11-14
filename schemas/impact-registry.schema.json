@@ -70,7 +70,7 @@
       "items": {
         "type": "object",
         "required": ["id", "aliases", "provider", "energyMultiplier", "priceUsdPerMillion", "source"],
-        "properties": {"energyMultiplier": {"const": 1}},
+        "properties": {"energyMultiplier": {"const": 1}, "cacheWriteRetentionVaries": {"type": "boolean", "description": "The provider prices cache writes by retention and logs do not record which was used, so calls that write to the cache are left unpriced."}},
         "oneOf": [
           {"required": ["priceEvidenceRef"], "properties": {"priceUsdPerMillion": {"type": "object"}}},
           {"required": ["unpricedReason"], "properties": {"priceUsdPerMillion": {"type": "null"}}}

@@ -72,8 +72,12 @@ function estimateEvent(event, registry, locationContext = 'unknown', options = {
   const unclassifiedClaudeWrite = event.provider === 'anthropic' && declaredUnclassified === undefined
     && (event.tokens.cacheWrite || 0) !== split;
   const partialCost = event.provider === 'anthropic' && declaredUnclassified !== undefined && declaredUnclassified > 0;
+  // Some models price a cache write by how long it is retained, and the logs
+  // do not record which retention was used, so any call or day that wrote to
+  // the cache would be priced by guess.
+  const unknownRetentionWrite = model?.cacheWriteRetentionVaries === true && (event.tokens.cacheWrite || 0) > 0;
   const nonStandardTier = !pricedAtStandardRates(event, registry, options);
-  if (model?.priceUsdPerMillion && !unclassifiedClaudeWrite && !nonStandardTier) {
+  if (model?.priceUsdPerMillion && !unclassifiedClaudeWrite && !unknownRetentionWrite && !nonStandardTier) {
     const price = model.priceUsdPerMillion;
     cost = ((event.tokens.input || 0) * price.input
       + (event.tokens.cachedInput || 0) * price.cachedInput
@@ -105,7 +109,7 @@ function estimateEvent(event, registry, locationContext = 'unknown', options = {
       partial: cost === null ? false : partialCost,
       unclassifiedCacheWriteTokens: cost === null ? 0 : partialCost ? unclassifiedTokens : 0,
       reason: nonStandardTier ? 'non-standard-tier'
-        : unclassifiedClaudeWrite ? 'cache-duration-unavailable'
+        : unclassifiedClaudeWrite || unknownRetentionWrite ? 'cache-duration-unavailable'
         : !model?.priceUsdPerMillion ? 'model-price-unavailable' : partialCost ? 'partial-cache-duration' : null},
     energyWh: {low: round(lowWh), mid: round(midWh), high: round(highWh)},
     water: {

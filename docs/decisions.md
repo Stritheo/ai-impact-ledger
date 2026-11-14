@@ -6,6 +6,7 @@ them. Commercial decisions are kept outside this public repository.
 
 | Date | Decision | Why | Where |
 |---|---|---|---|
+| 2026-11-14 | Work since 21 September ships as 0.3.1, superseding the 23 October ruling to fold it into 0.3.0 | 0.3.0 was already released on 21 September (tag `v0.3.0`); the changelog wrongly still read "unreleased", which the earlier ruling relied on | `CHANGELOG.md`; #14; #15 |
 | 2026-10-23 | The backlog lives in GitHub issues, labelled `beta` or `backlog`; CLAUDE.md points new sessions here | Context was living only in chat and was lost between sessions | CLAUDE.md "Start here" |
 | 2026-10-23 | Beta testers get 0.3.0 as a direct VSIX with its SHA-256 published, not through the Marketplace | A closed group, and Marketplace signing is still pending | #15 |
 | 2026-10-23 | Closed beta in about two weeks, testing cost and impact measurement; no offsetting | Core is ready, but macOS and Windows are untested, log folders are fixed, and reviews fall due mid-beta | #10 to #15 |
