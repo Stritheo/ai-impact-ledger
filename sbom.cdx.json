@@ -1,14 +1,14 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.6",
-  "serialNumber": "urn:uuid:9febdce4-6078-4fad-a322-cd427e5fca7e",
+  "serialNumber": "urn:uuid:882b3bde-3dfb-4519-ac0a-e6cdfcbfe2ca",
   "version": 1,
   "metadata": {
     "timestamp": "2026-09-12T00:00:00Z",
     "component": {
       "type": "application",
       "name": "ai-impact-ledger",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "licenses": [
         {
           "license": {

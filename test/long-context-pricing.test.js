@@ -138,9 +138,39 @@ test('the registry carries the GPT-6.1 Sol and GPT-6 Luna prices OpenAI states',
   assert.deepEqual(byId['gpt-6-luna'].priceUsdPerMillion, {input: 0.1, cachedInput: 0.01, cacheWrite: 0.125, output: 0.5});
 });
 
-// GPT-5.6 Sol's page states its price is promotional "at least through
-// November 21, 2026", so the review must fall due no later than that.
+// GPT-5.6 Sol's page said in October that its promotional price ran "at least
+// through November 21, 2026"; on 14 November it gives a fixed end, "until
+// November 30, 2026". The review must fall due no later than that.
 test('a promotional price is reviewed before the promotion can end', () => {
   const sol = registry.evidence['openai-sol-pricing-2026-09-15'];
-  assert.ok(Date.parse(sol.nextReviewDue) <= Date.parse('2026-11-21'), sol.nextReviewDue);
+  assert.ok(Date.parse(sol.nextReviewDue) <= Date.parse('2026-11-30'), sol.nextReviewDue);
+  assert.match(sol.derivation, /30 November 2026/);
+});
+
+// Reviewed 14 November 2026 against the Anthropic pricing page and the
+// GPT-6.1 Terra model page.
+test('the registry carries the Claude Fable 5.2 and GPT-6.1 Terra prices the providers state', () => {
+  const byId = Object.fromEntries(registry.models.map((model) => [model.id, model]));
+  assert.deepEqual(byId['claude-fable-5-2'].priceUsdPerMillion, {input: 8, cachedInput: 0.2, cacheWrite: 10, cacheWrite1h: 16, output: 40});
+  assert.deepEqual(byId['gpt-6.1-terra'].priceUsdPerMillion, {input: 1, cachedInput: 0.05, cacheWrite: 1.25, output: 5});
+  assert.equal(byId['gpt-6.1-terra'].standardPriceMaxInputTokens, 272000);
+});
+
+// GPT-6.1 Terra prices cache writes by retention: $1.25 for 30 minutes, $2.50
+// for 12 hours. Codex logs do not record which, so a call that writes to the
+// cache cannot be priced defensibly and is left unpriced, not guessed.
+test('a GPT-6.1 Terra call that writes to the cache is left unpriced and says why', () => {
+  const byId = Object.fromEntries(registry.models.map((model) => [model.id, model]));
+  assert.equal(byId['gpt-6.1-terra'].cacheWriteRetentionVaries, true);
+  const plain = codexCall('gpt-6.1-terra', 10000, 4000);
+  assert.ok(estimateEvent(plain, registry).cost.central > 0, 'no cache write, priced as usual');
+  const writing = {...plain, tokens: {...plain.tokens, cacheWrite: 2000}};
+  const estimate = estimateEvent(writing, registry);
+  assert.equal(estimate.cost.central, null);
+  assert.equal(estimate.cost.reason, 'cache-duration-unavailable');
+  assert.ok(estimate.energyWh.mid > 0, 'energy is still counted');
+  const day = estimateEvent({...writing, tokens: {...writing.tokens, cacheWriteUnclassified: 0}}, registry, 'unknown', {aggregate: true});
+  assert.equal(day.cost.central, null, 'a daily total with cache writes is not priced either');
+  const sol = {...writing, model: 'gpt-6.1-sol'};
+  assert.ok(estimateEvent(sol, registry).cost.central > 0, 'models with one cache-write price are unaffected');
 });
